@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4fbff;
-  --foreground: #0f172a;
-  --brand-teal: #0ea5a3;
-  --brand-deep: #0f4c75;
-  --neutral-100: #f8fafc;
-  --neutral-200: #e2e8f0;
+  --background: #f6f6f6;
+  --foreground: #111111;
+  --brand-teal: #4b4b4b;
+  --brand-deep: #111111;
+  --neutral-100: #fafafa;
+  --neutral-200: #e5e5e5;
   --radius-xl: 1rem;
   --radius-2xl: 1.25rem;
-  --shadow-brand: 0 14px 34px rgba(15, 76, 117, 0.16);
+  --shadow-brand: 0 14px 34px rgba(0, 0, 0, 0.14);
 }
 
 @theme inline {
@@ -31,8 +31,8 @@ body {
 
 .page-background {
   background:
-    radial-gradient(1200px 500px at 90% -20%, rgba(14, 165, 163, 0.22), transparent 65%),
-    radial-gradient(900px 420px at 10% -10%, rgba(15, 76, 117, 0.13), transparent 60%),
+    radial-gradient(1200px 500px at 90% -20%, rgba(0, 0, 0, 0.12), transparent 65%),
+    radial-gradient(900px 420px at 10% -10%, rgba(0, 0, 0, 0.08), transparent 60%),
     var(--background);
 }
 
