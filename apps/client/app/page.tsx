@@ -130,7 +130,7 @@ export default function Home() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href="#contact"
-                className="rounded-full bg-[var(--brand-deep)] px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#0d3f5d]"
+                className="rounded-full bg-[var(--brand-deep)] px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-zinc-800"
               >
                 Dung thu mien phi
               </a>
@@ -146,7 +146,7 @@ export default function Home() {
           <div className="surface-card relative overflow-hidden rounded-3xl p-6">
             <div className="mb-4 flex items-center justify-between">
               <p className="text-sm font-semibold text-slate-700">Tong quan van hanh hom nay</p>
-              <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+              <span className="rounded-full bg-zinc-200 px-3 py-1 text-xs font-semibold text-zinc-800">
                 +12.4%
               </span>
             </div>
@@ -223,7 +223,7 @@ export default function Home() {
                   href="#contact"
                   className={`mt-6 inline-flex w-full justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition ${
                     plan.featured
-                      ? "bg-[var(--brand-deep)] text-white hover:bg-[#0d3f5d]"
+                      ? "bg-[var(--brand-deep)] text-white hover:bg-zinc-800"
                       : "border border-slate-300 text-slate-800 hover:border-[var(--brand-teal)] hover:text-[var(--brand-teal)]"
                   }`}
                 >
