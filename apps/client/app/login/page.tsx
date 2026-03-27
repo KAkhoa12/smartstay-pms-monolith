@@ -17,8 +17,8 @@ export default function LoginPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#f2f2f2] text-[#1a1a1a]">
-      <header className="bg-[#003b95] text-white">
+    <main className="min-h-screen bg-[#f3f5f6] text-[#1a1a1a]">
+      <header className="marina-header text-white shadow-[0_10px_24px_rgba(44,86,100,0.25)]">
         <div className="mx-auto flex h-21 w-full max-w-7xl items-center justify-between px-6 md:px-10">
           <Link href="/login" className="text-[2rem] font-semibold tracking-tight md:text-[2.1rem]">
             SmartStay.com
@@ -76,10 +76,10 @@ export default function LoginPage() {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     placeholder="Nhap dia chi email cua ban"
-                    className="h-13 flex-1 rounded-[8px] border-2 border-[#006ce4] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition"
+                    className="h-13 flex-1 rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
                   />
                 ) : (
-                  <div className="flex h-13 flex-1 overflow-hidden rounded-[8px] border-2 border-[#8b7bff] bg-white">
+                  <div className="flex h-13 flex-1 overflow-hidden rounded-[8px] border-2 border-[#8fcad9] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]">
                     <div className="flex w-[12.5%] min-w-[56px] items-center justify-center text-[1.03rem] font-semibold text-slate-900">
                       +84
                     </div>
@@ -108,7 +108,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="mt-5 h-14 w-full rounded-[6px] bg-[#006ce4] text-xl font-semibold text-white hover:bg-[#0059c2]"
+                className="glossy-button mt-5 h-14 w-full rounded-[6px] text-xl font-semibold text-white"
               >
                 Tiep tuc
               </Button>
@@ -147,11 +147,11 @@ export default function LoginPage() {
             <div className="border-t border-slate-300 pt-6 text-center">
               <p className="mx-auto max-w-[540px] text-base leading-8 text-slate-900">
                 Qua viec dang nhap hoac tao tai khoan, ban dong y voi cac{" "}
-                <Link href="#" className="text-[#006ce4] hover:underline">
+                <Link href="#" className="text-[#5a9aac] hover:underline">
                   Dieu khoan va Dieu kien
                 </Link>{" "}
                 cung nhu{" "}
-                <Link href="#" className="text-[#006ce4] hover:underline">
+                <Link href="#" className="text-[#5a9aac] hover:underline">
                   Chinh sach Bao mat
                 </Link>{" "}
                 cua chung toi
