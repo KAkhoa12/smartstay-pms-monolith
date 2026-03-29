@@ -209,3 +209,5 @@ __marimo__/
 # Keep frontend app utility libs tracked in monorepo apps.
 !apps/**/lib/
 !apps/**/lib/**
+
+client_secret_252213794105-q130et14vtq02jlner50gv0l249sfvul.apps.googleusercontent.com.json
