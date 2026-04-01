@@ -5,36 +5,40 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-    --brand-teal: #4b4b4b;
-    --brand-deep: #111111;
-    --neutral-100: #fafafa;
-    --neutral-200: #e5e5e5;
+    --shared-top-menu-height: 78px;
+    --results-search-bar-height: 92px;
+    --marina-ice: #f4f6f7;
+    --marina-cloud: #e8edf0;
+    --marina-sea: #7dc0d1;
+    --marina-sea-strong: #5da7bb;
+    --marina-deep: #355064;
+    --marina-ink: #4b5560;
     --radius-xl: 1rem;
     --radius-2xl: 1.25rem;
-    --shadow-brand: 0 14px 34px rgba(0, 0, 0, 0.14);
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary: oklch(0.205 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
+    --shadow-brand: 0 16px 36px rgba(53, 80, 100, 0.16);
+    --background: #f4f6f7;
+    --foreground: #2f3f4d;
+    --card: #ffffff;
+    --card-foreground: #2f3f4d;
+    --popover: #ffffff;
+    --popover-foreground: #2f3f4d;
+    --primary: #7dc0d1;
+    --primary-foreground: #ffffff;
+    --secondary: #e8edf0;
+    --secondary-foreground: #355064;
+    --muted: #eef2f4;
+    --muted-foreground: #6b7882;
+    --accent: #dce9ee;
+    --accent-foreground: #355064;
     --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
+    --border: #d4dde2;
+    --input: #d4dde2;
+    --ring: #7dc0d1;
+    --chart-1: #9bc6d2;
+    --chart-2: #74b1c1;
+    --chart-3: #5a9aac;
+    --chart-4: #486f86;
+    --chart-5: #355064;
     --radius: 0.625rem;
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
@@ -146,6 +150,229 @@ body {
     );
     pointer-events: none;
     z-index: 1;
+}
+
+.deal-loop {
+    position: relative;
+}
+
+@keyframes pageEnter {
+    0% {
+        opacity: 0;
+        filter: blur(6px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+.page-transition {
+    animation: pageEnter 884ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, filter;
+}
+
+body {
+    transition: opacity 260ms ease, filter 260ms ease, transform 260ms ease;
+}
+
+body.page-transitioning {
+    opacity: 0.74;
+    filter: blur(4px);
+    transform: translateY(8px);
+}
+
+@keyframes resultListHorizontalEnter {
+    0% {
+        opacity: 0.72;
+        transform: translateY(12px) scale(0.972);
+        filter: blur(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes resultListVerticalEnter {
+    0% {
+        opacity: 0.74;
+        transform: translateY(10px) scale(0.968);
+        filter: blur(7px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.result-list-transition > article {
+    will-change: opacity, transform, filter;
+    transform-origin: 50% 50%;
+}
+
+.result-hotel-card,
+.result-hotel-media,
+.result-hotel-body,
+.result-hotel-content,
+.result-hotel-side {
+    transition-property: transform, opacity, filter, padding, gap, width, min-width, border-color, box-shadow;
+    transition-duration: 420ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.result-list-horizontal > article {
+    animation: resultListHorizontalEnter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.result-list-vertical > article {
+    animation: resultListVerticalEnter 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.result-list-transition > article:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.result-list-transition > article:nth-child(2) {
+    animation-delay: 30ms;
+}
+
+.result-list-transition > article:nth-child(3) {
+    animation-delay: 60ms;
+}
+
+.result-list-transition > article:nth-child(4) {
+    animation-delay: 90ms;
+}
+
+.result-list-transition > article:nth-child(5) {
+    animation-delay: 120ms;
+}
+
+.result-list-transition > article:nth-child(6) {
+    animation-delay: 150ms;
+}
+
+.result-list-morphing .result-hotel-card {
+    transform: scale(0.985);
+}
+
+.result-list-morphing .result-hotel-media {
+    transform: scale(0.985);
+    filter: saturate(0.98);
+}
+
+.result-list-morphing .result-hotel-body {
+    transform: scale(0.992);
+}
+
+.result-list-horizontal.result-list-morphing .result-hotel-content {
+    transform: scale(1.01);
+}
+
+.result-list-vertical.result-list-morphing .result-hotel-content {
+    transform: scale(0.985);
+}
+
+.result-list-horizontal.result-list-morphing .result-hotel-side,
+.result-list-vertical.result-list-morphing .result-hotel-side {
+    transform: scale(0.97);
+    opacity: 0.92;
+}
+
+.range-thumb-primary::-webkit-slider-runnable-track {
+    height: 0;
+}
+
+.range-thumb-primary::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    pointer-events: auto;
+    margin-top: -14px;
+    height: 28px;
+    width: 28px;
+    border-radius: 9999px;
+    border: 1px solid #d8dde3;
+    background: #ffffff;
+    box-shadow: 0 1px 6px rgba(15, 23, 42, 0.08);
+    cursor: pointer;
+}
+
+.range-thumb-primary::-moz-range-track {
+    height: 0;
+    background: transparent;
+}
+
+.range-thumb-primary::-moz-range-thumb {
+    pointer-events: auto;
+    height: 28px;
+    width: 28px;
+    border-radius: 9999px;
+    border: 1px solid #d8dde3;
+    background: #ffffff;
+    box-shadow: 0 1px 6px rgba(15, 23, 42, 0.08);
+    cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-transition {
+        animation: none;
+    }
+
+    .result-list-transition > article {
+        animation: none;
+    }
+
+    .result-hotel-card,
+    .result-hotel-media,
+    .result-hotel-body,
+    .result-hotel-content,
+    .result-hotel-side {
+        transition: none;
+    }
+}
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root) {
+    animation: pageOut 320ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+    animation: pageIn 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pageOut {
+    from {
+        opacity: 1;
+        filter: blur(0);
+    }
+    to {
+        opacity: 0.08;
+        filter: blur(8px);
+    }
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
 }
 
 @keyframes hotelFade {

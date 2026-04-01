@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SmartStay PMS | Quan ly khach san thong minh",
+  title: "SmartStay PMS | Quản lý khách sạn thông minh",
   description:
-    "SmartStay PMS giup khach san quan ly dat phong, le tan, housekeeping va doanh thu tren mot nen tang truc quan.",
+    "SmartStay PMS giúp khách sạn quản lý đặt phòng, lễ tân, housekeeping và doanh thu trên một nền tảng trực quan.",
 };
 
 export default function RootLayout({
@@ -26,6 +26,7 @@ export default function RootLayout({
   return (
     <html
       lang="vi"
+      data-scroll-behavior="smooth"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
