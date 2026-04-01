@@ -108,7 +108,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="glossy-button mt-5 h-14 w-full rounded-[6px] text-xl font-semibold text-white"
+                className="mt-5 h-14 w-full rounded-[6px] bg-[#006ce4] text-xl font-semibold text-white hover:bg-[#0059c2]"
               >
                 Tiếp tục
               </Button>
