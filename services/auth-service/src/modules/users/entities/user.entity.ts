@@ -16,6 +16,15 @@ export class User {
   @Column({ name: 'full_name', type: 'varchar', length: 100 })
   fullName: string;
 
+  @Column({ name: 'phone_number', type: 'varchar', length: 30, nullable: true })
+  phoneNumber: string | null;
+
+  @Column({ name: 'job_title', type: 'varchar', length: 100, nullable: true })
+  jobTitle: string | null;
+
+  @Column({ name: 'account_type', type: 'varchar', length: 20, default: 'CUSTOMER' })
+  accountType: string;
+
   @Column({ name: 'is_global_admin', default: false })
   isGlobalAdmin: boolean;
 
