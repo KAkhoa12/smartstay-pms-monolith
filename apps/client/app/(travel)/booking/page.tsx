@@ -1,9 +1,8 @@
 ﻿"use client";
 
-import { type FormEvent, type PointerEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import SharedTopMenu from "@/components/shared-top-menu";
 import {
   DATE_PANEL_CLASS,
   GUEST_PANEL_CLASS,
@@ -34,57 +33,57 @@ import {
 
 const featuredDestinations = [
   {
-    city: "Phu Quoc",
-    hotels: "920 khach san",
+    city: "Phú Quốc",
+    hotels: "920 khách sạn",
     image:
       "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=1400&q=80",
     className: "md:col-span-8 md:row-span-1 md:h-[160px]",
   },
   {
-    city: "Vung Tau",
-    hotels: "597 khach san",
+    city: "Vũng Tàu",
+    hotels: "597 khách sạn",
     image:
       "https://images.unsplash.com/photo-1533929736458-ca588d08c8be?auto=format&fit=crop&w=900&q=80",
     className: "md:col-span-4 md:row-span-2 md:h-[332px]",
   },
   {
-    city: "Da Lat",
-    hotels: "1178 khach san",
+    city: "Đà Lạt",
+    hotels: "1178 khách sạn",
     image:
       "https://images.unsplash.com/photo-1541417904950-b855846fe074?auto=format&fit=crop&w=900&q=80",
     className: "md:col-span-4 md:row-span-1 md:h-[160px]",
   },
   {
-    city: "Quy Nhon",
-    hotels: "333 khach san",
+    city: "Quy Nhơn",
+    hotels: "333 khách sạn",
     image:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80",
     className: "md:col-span-4 md:row-span-1 md:h-[160px]",
   },
   {
     city: "Nha Trang",
-    hotels: "1023 khach san",
+    hotels: "1023 khách sạn",
     image:
       "https://images.unsplash.com/photo-1473116763249-2faaef81ccda?auto=format&fit=crop&w=900&q=80",
     className: "md:col-span-4 md:row-span-2 md:h-[264px]",
   },
   {
-    city: "Da Nang",
-    hotels: "1355 khach san",
+    city: "Đà Nẵng",
+    hotels: "1355 khách sạn",
     image:
       "https://images.unsplash.com/photo-1624111673546-0cfa5a81fb3f?auto=format&fit=crop&w=1200&q=80",
     className: "md:col-span-8 md:row-span-1 md:h-[128px]",
   },
   {
-    city: "Phan Thiet",
-    hotels: "499 khach san",
+    city: "Phan Thiết",
+    hotels: "499 khách sạn",
     image:
       "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
     className: "md:col-span-4 md:row-span-1 md:h-[128px]",
   },
   {
-    city: "Phu Yen",
-    hotels: "18 khach san",
+    city: "Phú Yên",
+    hotels: "18 khách sạn",
     image:
       "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=900&q=80",
     className: "md:col-span-4 md:row-span-1 md:h-[128px]",
@@ -97,7 +96,7 @@ const roomDeals = [
     name: "Cozi Inn Hotel",
     location: "Pratunam",
     rating: "8.0/10",
-    reviews: "1,8k danh gia",
+    reviews: "1,8k đánh giá",
     newPrice: "603.883 VND",
     oldPrice: "805.177 VND",
     discountPercent: 25,
@@ -109,7 +108,7 @@ const roomDeals = [
     name: "48 Ville Don Muang Airport",
     location: "Don Mueang Airport",
     rating: "8.3/10",
-    reviews: "4,1k danh gia",
+    reviews: "4,1k đánh giá",
     newPrice: "362.804 VND",
     oldPrice: "395.208 VND",
     discountPercent: 8,
@@ -121,7 +120,7 @@ const roomDeals = [
     name: "Livotel Hotel Kaset Nawamin Bangkok",
     location: "Sena Nikhom",
     rating: "8.4/10",
-    reviews: "4,6k danh gia",
+    reviews: "4,6k đánh giá",
     newPrice: "607.335 VND",
     oldPrice: "773.286 VND",
     discountPercent: 19,
@@ -133,7 +132,7 @@ const roomDeals = [
     name: "Miracle Grand Convention Hotel",
     location: "Lak Si",
     rating: "8.5/10",
-    reviews: "2,8k danh gia",
+    reviews: "2,8k đánh giá",
     newPrice: "1.466.573 VND",
     oldPrice: "1.597.574 VND",
     discountPercent: 7,
@@ -151,7 +150,7 @@ const hotelPartners = [
   "Fusion Group",
   "Marriott",
   "Minor Hotels",
-  "Muong Thanh",
+  "Mường Thanh",
   "Odyssea",
   "Rising Dragon",
   "Roseland Hotels Group",
@@ -216,18 +215,14 @@ type DistrictDetailResponse = {
 const PROVINCES_API_BASE_URL = "https://provinces.open-api.vn/api";
 const SMART_SEARCH_BG_OPACITY = 0.29;
 const SMART_SEARCH_BORDER_OPACITY = 0;
-const BOOKING_DESTINATION_REQUIRED_MESSAGE = "Vui long nhap diem den de bat dau tim kiem.";
+const BOOKING_DESTINATION_REQUIRED_MESSAGE = "Vui lòng nhập điểm đến để bắt đầu tìm kiếm.";
 
 export default function HomeManagementPage() {
   const router = useRouter();
   const searchFormRef = useRef<HTMLFormElement | null>(null);
-  const dealMarqueeRef = useRef<HTMLDivElement | null>(null);
-  const isDealDraggingRef = useRef(false);
+  const dealLoopRef = useRef<HTMLDivElement | null>(null);
   const dealPauseRef = useRef(false);
-  const dealManualPauseRef = useRef(false);
   const dealResumeTimerRef = useRef<number | null>(null);
-  const dragStartXRef = useRef(0);
-  const dragStartScrollRef = useRef(0);
   const [isDealHovered, setIsDealHovered] = useState(false);
   const [provinces, setProvinces] = useState<ProvinceItem[]>([]);
   const [districts, setDistricts] = useState<DistrictItem[]>([]);
@@ -246,7 +241,6 @@ export default function HomeManagementPage() {
   const [rooms, setRooms] = useState(1);
   const [beds, setBeds] = useState(1);
   const [petFriendly, setPetFriendly] = useState(false);
-  const [isHeaderCompact, setIsHeaderCompact] = useState(false);
   const [displayMonth, setDisplayMonth] = useState(() => {
     const now = new Date();
     return new Date(now.getFullYear(), now.getMonth(), 1);
@@ -269,15 +263,6 @@ export default function HomeManagementPage() {
     setIsDateOpen((prev) => (target === "date" ? !prev : false));
     setIsGuestOpen((prev) => (target === "guest" ? !prev : false));
   };
-
-  useEffect(() => {
-    const onScroll = () => {
-      setIsHeaderCompact(window.scrollY > 24);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -304,12 +289,12 @@ export default function HomeManagementPage() {
     ? `${selectedWard.name}, ${selectedDistrict?.name ?? ""}, ${selectedProvince?.name ?? ""}`
     : selectedDistrict
       ? `${selectedDistrict.name}, ${selectedProvince?.name ?? ""}`
-      : selectedProvince?.name ?? "Ban muon den dau?";
+      : selectedProvince?.name ?? "Bạn muốn đến đâu?";
 
   const dateDisplayLabel =
     checkInDate && checkOutDate
       ? `${new Date(checkInDate).toLocaleDateString("vi-VN")} - ${new Date(checkOutDate).toLocaleDateString("vi-VN")}`
-      : "Nhan phong - Tra phong";
+      : "Nhận phòng - Trả phòng";
   const monthTitle = displayMonth.toLocaleDateString("vi-VN", {
     month: "long",
     year: "numeric",
@@ -318,32 +303,38 @@ export default function HomeManagementPage() {
   const daysInMonth = new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 0).getDate();
   const dayLabels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
   const sortedRoomDeals = [...roomDeals].sort((a, b) => b.discountPercent - a.discountPercent);
-  const normalizeDealScroll = () => {
-    const container = dealMarqueeRef.current;
+
+  const handleDealArrowClick = (direction: "left" | "right") => {
+    const container = dealLoopRef.current;
     if (!container) return;
 
-    const loopWidth = container.scrollWidth / 2;
-    if (loopWidth <= 0) return;
-
-    if (container.scrollLeft >= loopWidth) {
-      container.scrollLeft -= loopWidth;
-    } else if (container.scrollLeft < 0) {
-      container.scrollLeft += loopWidth;
+    dealPauseRef.current = true;
+    if (dealResumeTimerRef.current !== null) {
+      window.clearTimeout(dealResumeTimerRef.current);
+      dealResumeTimerRef.current = null;
     }
+
+    const scrollAmount = Math.max(260, container.clientWidth * 0.72);
+    container.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
   };
 
   useEffect(() => {
-    const container = dealMarqueeRef.current;
+    const container = dealLoopRef.current;
     if (!container) return;
 
     let frameId = 0;
 
     const tick = () => {
       const loopWidth = container.scrollWidth / 2;
-      if (!dealPauseRef.current && loopWidth > 0) {
-        container.scrollLeft += 0.6;
-        if (container.scrollLeft >= loopWidth) {
-          container.scrollLeft -= loopWidth;
+      if (loopWidth > 0) {
+        if (!dealPauseRef.current) {
+          container.scrollLeft += 0.9;
+          if (container.scrollLeft >= loopWidth) {
+            container.scrollLeft -= loopWidth;
+          }
         }
       }
 
@@ -351,80 +342,14 @@ export default function HomeManagementPage() {
     };
 
     frameId = window.requestAnimationFrame(tick);
-    return () => window.cancelAnimationFrame(frameId);
-  }, []);
 
-  useEffect(() => {
     return () => {
-      if (dealResumeTimerRef.current) {
+      window.cancelAnimationFrame(frameId);
+      if (dealResumeTimerRef.current !== null) {
         window.clearTimeout(dealResumeTimerRef.current);
       }
     };
   }, []);
-
-  const clearDealResumeTimer = () => {
-    if (dealResumeTimerRef.current) {
-      window.clearTimeout(dealResumeTimerRef.current);
-      dealResumeTimerRef.current = null;
-    }
-  };
-
-  const scheduleDealResumeAfterLeave = () => {
-    clearDealResumeTimer();
-    dealResumeTimerRef.current = window.setTimeout(() => {
-      dealManualPauseRef.current = false;
-      dealPauseRef.current = false;
-    }, 5000);
-  };
-
-  const handleDealPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    const container = dealMarqueeRef.current;
-    if (!container) return;
-
-    isDealDraggingRef.current = true;
-    dealPauseRef.current = true;
-    dragStartXRef.current = event.clientX;
-    dragStartScrollRef.current = container.scrollLeft;
-    event.currentTarget.setPointerCapture(event.pointerId);
-  };
-
-  const handleDealPointerMove = (event: PointerEvent<HTMLDivElement>) => {
-    const container = dealMarqueeRef.current;
-    if (!container || !isDealDraggingRef.current) return;
-
-    const deltaX = event.clientX - dragStartXRef.current;
-    container.scrollLeft = dragStartScrollRef.current - deltaX;
-    normalizeDealScroll();
-  };
-
-  const handleDealPointerUp = (event: PointerEvent<HTMLDivElement>) => {
-    if (!isDealDraggingRef.current) return;
-
-    isDealDraggingRef.current = false;
-    if (!dealManualPauseRef.current) {
-      dealPauseRef.current = false;
-    }
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
-    }
-  };
-
-  const handleDealArrowClick = (direction: "left" | "right") => {
-    const container = dealMarqueeRef.current;
-    if (!container) return;
-
-    clearDealResumeTimer();
-    dealManualPauseRef.current = true;
-    dealPauseRef.current = true;
-
-    const scrollAmount = Math.max(260, container.clientWidth * 0.86);
-    container.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
-
-    window.setTimeout(() => normalizeDealScroll(), 280);
-  };
 
   const toIsoDate = (year: number, month: number, day: number) => {
     const mm = String(month + 1).padStart(2, "0");
@@ -531,17 +456,13 @@ export default function HomeManagementPage() {
   return (
     <main className="min-h-screen bg-[#f1f4f5] text-slate-900">
       <section
-        className={`relative min-h-[74vh] bg-cover bg-center transition-all duration-300 ${
-          isHeaderCompact ? "pt-[150px]" : "pt-[168px]"
-        }`}
+        className="relative min-h-[74vh] bg-cover bg-center pt-6 transition-all duration-300"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1470004914212-05527e49370b?auto=format&fit=crop&w=2200&q=80')",
         }}
       >
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(31,62,83,0.34)_0%,rgba(31,62,83,0.12)_25%,rgba(31,62,83,0.26)_100%)]" />
-
-        <SharedTopMenu compact={isHeaderCompact} />
 
         <div className="relative z-10 mx-auto flex w-full max-w-6xl justify-center px-4 pb-24 pt-28 lg:px-8">
           <div
@@ -553,7 +474,7 @@ export default function HomeManagementPage() {
             }}
           >
             <p className="mb-2 text-center text-sm font-bold tracking-[0.02em] text-[#e4f4fb] drop-shadow-[0_2px_4px_rgba(8,31,44,0.55)]">
-              Tim kiem thong minh
+              Tìm kiếm thông minh
             </p>
             <form
               ref={searchFormRef}
@@ -584,7 +505,7 @@ export default function HomeManagementPage() {
                         onChange={(event) => handleProvinceChange(event.target.value)}
                         className="h-9 w-full rounded-md border border-slate-300 bg-white px-2 text-sm outline-none focus:border-[#5a9aac]"
                       >
-                        <option value="">Chon Tinh/Thanh pho</option>
+                        <option value="">Chọn Tỉnh/Thành phố</option>
                         {provinces.map((province) => (
                           <option key={province.code} value={province.code}>
                             {province.name}
@@ -598,7 +519,7 @@ export default function HomeManagementPage() {
                         disabled={!selectedProvinceCode}
                         className="h-9 w-full rounded-md border border-slate-300 bg-white px-2 text-sm outline-none disabled:cursor-not-allowed disabled:bg-slate-100 focus:border-[#5a9aac]"
                       >
-                        <option value="">Chon Quan/Huyen</option>
+                        <option value="">Chọn Quận/Huyện</option>
                         {districts.map((district) => (
                           <option key={district.code} value={district.code}>
                             {district.name}
@@ -618,7 +539,7 @@ export default function HomeManagementPage() {
                         disabled={!selectedDistrictCode}
                         className="h-9 w-full rounded-md border border-slate-300 bg-white px-2 text-sm outline-none disabled:cursor-not-allowed disabled:bg-slate-100 focus:border-[#5a9aac]"
                       >
-                        <option value="">Chon Phuong/Xa</option>
+                        <option value="">Chọn Phường/Xã</option>
                         {wards.map((ward) => (
                           <option key={ward.code} value={ward.code}>
                             {ward.name}
@@ -642,7 +563,7 @@ export default function HomeManagementPage() {
                 </button>
                 {isDateOpen ? (
                   <DropdownPanel className={DATE_PANEL_CLASS}>
-                    <p className="mb-2 text-center text-sm font-medium text-[#5a9aac]">Lich</p>
+                    <p className="mb-2 text-center text-sm font-medium text-[#5a9aac]">Lịch</p>
                     <div className="mb-3 flex items-center justify-between border-t border-[#8fb9c5] pt-2">
                       <button
                         type="button"
@@ -652,7 +573,7 @@ export default function HomeManagementPage() {
                           )
                         }
                         className="rounded p-1 text-slate-500 hover:bg-slate-100"
-                        aria-label="Thang truoc"
+                        aria-label="Tháng trước"
                       >
                         <ChevronLeft className="size-4" />
                       </button>
@@ -665,7 +586,7 @@ export default function HomeManagementPage() {
                           )
                         }
                         className="rounded p-1 text-slate-500 hover:bg-slate-100"
-                        aria-label="Thang sau"
+                        aria-label="Tháng sau"
                       >
                         <ChevronRight className="size-4" />
                       </button>
@@ -687,6 +608,7 @@ export default function HomeManagementPage() {
                         const iso = toIsoDate(displayMonth.getFullYear(), displayMonth.getMonth(), day);
                         const isStart = iso === checkInDate;
                         const isEnd = iso === checkOutDate;
+                        const isWeekend = (monthStartWeekday + idx) % 7 === 5 || (monthStartWeekday + idx) % 7 === 6;
                         const isInRange =
                           Boolean(checkInDate) &&
                           Boolean(checkOutDate) &&
@@ -698,12 +620,14 @@ export default function HomeManagementPage() {
                             key={iso}
                             type="button"
                             onClick={() => handlePickDate(day)}
-                            className={`h-10 rounded text-sm ${
+                            className={`h-10 rounded-full border text-sm transition ${
                               isStart || isEnd
-                                ? "bg-[#5a9aac] font-semibold text-white"
+                                ? "border-[#0b84ff] bg-white font-bold text-[#0b84ff] shadow-[inset_0_0_0_1px_rgba(11,132,255,0.18)]"
                                 : isInRange
-                                  ? "bg-[#e8f1f5] text-[#4f7385]"
-                                  : "text-slate-700 hover:bg-slate-100"
+                                  ? "border-transparent bg-[#dff0ff] font-semibold text-[#183b67]"
+                                  : isWeekend
+                                    ? "border-transparent text-[#e02424] hover:bg-[#fff1f1]"
+                                    : "border-transparent text-slate-700 hover:bg-slate-100"
                             }`}
                           >
                             {day}
@@ -748,10 +672,10 @@ export default function HomeManagementPage() {
                   <DropdownPanel className={GUEST_PANEL_CLASS}>
                     <div className="space-y-2">
                       {[
-                        { label: "Nguoi lon", value: adults, min: 1, max: 20, set: setAdults },
-                        { label: "Tre em", value: children, min: 0, max: 10, set: setChildren },
-                        { label: "Phong", value: rooms, min: 1, max: 10, set: setRooms },
-                        { label: "Giuong", value: beds, min: 1, max: 4, set: setBeds },
+                        { label: "Người lớn", value: adults, min: 1, max: 20, set: setAdults },
+                        { label: "Trẻ em", value: children, min: 0, max: 10, set: setChildren },
+                        { label: "Phòng", value: rooms, min: 1, max: 10, set: setRooms },
+                        { label: "Giường", value: beds, min: 1, max: 4, set: setBeds },
                       ].map((item) => (
                         <div key={item.label} className="flex items-center justify-between">
                           <p className="text-sm font-medium text-slate-800">{item.label}</p>
@@ -781,9 +705,9 @@ export default function HomeManagementPage() {
                     <div className="my-4 border-t border-slate-200 pt-4">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm font-medium text-slate-800">Mang thu cung di cung</p>
+                          <p className="text-sm font-medium text-slate-800">Mang thú cưng đi cùng</p>
                           <p className="mt-1 text-xs text-slate-600">
-                            Dong vat tro giup khong duoc xem la vat nuoi.
+                            Động vật trợ giúp không được xem là vật nuôi.
                           </p>
                         </div>
                         <button
@@ -794,13 +718,13 @@ export default function HomeManagementPage() {
                               ? "border-[#5a9aac] bg-[#5a9aac] text-white"
                               : "border-slate-300 bg-white text-transparent"
                           }`}
-                          aria-label="Bat tat thu cung"
+                          aria-label="Bật tắt thú cưng"
                         >
                           <Check className="size-4" />
                         </button>
                       </div>
                       <a href="#" className="mt-2 inline-block text-xs text-[#5a9aac] hover:underline">
-                        Doc them ve chu de di du lich cung dong vat tro giup
+                        Đọc thêm về chủ đề đi du lịch cùng động vật trợ giúp
                       </a>
                     </div>
 
@@ -817,7 +741,7 @@ export default function HomeManagementPage() {
 
               <button
                 type="submit"
-                aria-label="Tim kiem"
+                aria-label="Tìm kiếm"
                 className="glossy-button flex h-11 items-center justify-center rounded-md px-5 text-white"
               >
                 <Search className="size-5" />
@@ -830,56 +754,63 @@ export default function HomeManagementPage() {
       <section className="bg-[#f7fafb] py-8">
         <div className="mx-auto w-full max-w-6xl px-4 lg:px-8">
           <div className="mb-4 flex items-end justify-between">
-            <h2 className="text-[30px] font-bold leading-tight text-slate-800">Uu dai</h2>
+            <h2 className="text-[30px] font-bold leading-tight text-slate-800">Ưu đãi</h2>
           </div>
 
           <div
-            className="relative"
+            className="deal-loop overflow-visible px-4 py-5"
             onMouseEnter={() => {
-              clearDealResumeTimer();
               setIsDealHovered(true);
+              dealPauseRef.current = true;
+              if (dealResumeTimerRef.current !== null) {
+                window.clearTimeout(dealResumeTimerRef.current);
+                dealResumeTimerRef.current = null;
+              }
             }}
             onMouseLeave={() => {
               setIsDealHovered(false);
-              if (dealManualPauseRef.current) {
-                scheduleDealResumeAfterLeave();
+              if (dealResumeTimerRef.current !== null) {
+                window.clearTimeout(dealResumeTimerRef.current);
               }
+              dealResumeTimerRef.current = window.setTimeout(() => {
+                dealPauseRef.current = false;
+                dealResumeTimerRef.current = null;
+              }, 3000);
             }}
           >
+            <div className="pointer-events-none absolute inset-y-5 left-0 z-10 w-12 bg-gradient-to-r from-[#f7fafb] via-[#f7fafb]/85 to-transparent" />
+            <div className="pointer-events-none absolute inset-y-5 right-0 z-10 w-12 bg-gradient-to-l from-[#f7fafb] via-[#f7fafb]/85 to-transparent" />
+
             {isDealHovered ? (
               <button
                 type="button"
-                aria-label="Uu dai truoc"
+                aria-label="Ưu đãi trước"
                 onClick={() => handleDealArrowClick("left")}
-                className="absolute left-[-22px] top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#c8dbe3] bg-white text-[#3b7588] shadow-[0_8px_16px_rgba(35,82,101,0.22)] transition hover:bg-[#edf6fa]"
+                className="absolute left-0 top-1/2 z-20 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#c8dbe3] bg-white/95 text-[#3b7588] shadow-[0_8px_16px_rgba(35,82,101,0.18)] transition hover:bg-[#edf6fa]"
               >
-                <ChevronLeft className="size-5" />
+                <ChevronLeft className="size-4" />
               </button>
             ) : null}
 
             {isDealHovered ? (
               <button
                 type="button"
-                aria-label="Uu dai tiep theo"
+                aria-label="Ưu đãi tiếp theo"
                 onClick={() => handleDealArrowClick("right")}
-                className="absolute right-[-22px] top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#c8dbe3] bg-white text-[#3b7588] shadow-[0_8px_16px_rgba(35,82,101,0.22)] transition hover:bg-[#edf6fa]"
+                className="absolute right-0 top-1/2 z-20 flex size-11 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-[#c8dbe3] bg-white/95 text-[#3b7588] shadow-[0_8px_16px_rgba(35,82,101,0.18)] transition hover:bg-[#edf6fa]"
               >
-                <ChevronRight className="size-5" />
+                <ChevronRight className="size-4" />
               </button>
             ) : null}
 
             <div
-              ref={dealMarqueeRef}
-              className="deal-marquee overflow-hidden select-none cursor-grab active:cursor-grabbing"
-              onPointerDown={handleDealPointerDown}
-              onPointerMove={handleDealPointerMove}
-              onPointerUp={handleDealPointerUp}
-              onPointerCancel={handleDealPointerUp}
+              ref={dealLoopRef}
+              className="overflow-x-auto overflow-y-hidden [scrollbar-width:none] [-ms-overflow-style:none]"
             >
               <div className="flex w-max gap-3 pb-1">
-                {[...sortedRoomDeals, ...sortedRoomDeals].map((deal, index) => (
+              {[...sortedRoomDeals, ...sortedRoomDeals].map((deal, index) => (
                 <Link
-                  key={`${deal.name}-${index}`}
+                  key={`${deal.slug}-${index}`}
                   href={`/deals/${deal.slug}`}
                   className="min-w-[270px] overflow-hidden rounded-xl border border-[#d5e6eb] bg-white shadow-[0_8px_16px_rgba(35,82,101,0.08)] transition hover:-translate-y-[2px] hover:shadow-[0_12px_22px_rgba(35,82,101,0.14)] md:min-w-[285px]"
                 >
@@ -893,7 +824,7 @@ export default function HomeManagementPage() {
                         {deal.location}
                       </span>
                       <span className="absolute bottom-2 right-2 rounded bg-[#ff7a00] px-2 py-1 text-xs font-bold text-white">
-                        Tiet kiem {deal.discountPercent}%
+                        Tiết kiệm {deal.discountPercent}%
                       </span>
                     </div>
 
@@ -908,15 +839,15 @@ export default function HomeManagementPage() {
                   </article>
                 </Link>
               ))}
+              </div>
             </div>
-          </div>
           </div>
         </div>
       </section>
 
       <section className="border-t border-slate-300 bg-[#f3f5f7] py-8">
         <div className="mx-auto w-full max-w-6xl px-4 lg:px-8">
-          <h2 className="text-[40px] font-bold leading-tight text-slate-800">Diem den yeu thich trong nuoc</h2>
+          <h2 className="text-[40px] font-bold leading-tight text-slate-800">Điểm đến yêu thích trong nước</h2>
 
           <div className="mt-6 grid gap-3 md:grid-cols-12 md:grid-rows-4">
             {featuredDestinations.map((item) => (
@@ -943,11 +874,11 @@ export default function HomeManagementPage() {
 
       <section className="border-t border-slate-300 bg-[#f7f8fa] py-10">
         <div className="mx-auto w-full max-w-6xl px-4 lg:px-8">
-          <h2 className="text-[44px] font-bold leading-tight text-slate-900">Doi tac khach san</h2>
-          <p className="mt-2 text-[28px] text-slate-600">Doi tac khach san trong nuoc & quoc te</p>
+          <h2 className="text-[44px] font-bold leading-tight text-slate-900">Đối tác khách sạn</h2>
+          <p className="mt-2 text-[28px] text-slate-600">Đối tác khách sạn trong nước & quốc tế</p>
           <p className="mt-2 max-w-5xl text-sm leading-6 text-slate-700">
-            Chung toi hop tac voi cac chuoi khach san uy tin toan cau de mang den cho ban cho o thoai mai va dang
-            tin cay, du ban di bat cu dau.
+            Chúng tôi hợp tác với các chuỗi khách sạn uy tín toàn cầu để mang đến cho bạn chỗ ở thoải mái và đáng
+            tin cậy, dù bạn đi bất cứ đâu.
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-8">
@@ -961,10 +892,10 @@ export default function HomeManagementPage() {
             ))}
           </div>
 
-          <h3 className="mt-12 text-[44px] font-bold leading-tight text-slate-900">Doi tac thanh toan</h3>
+          <h3 className="mt-12 text-[44px] font-bold leading-tight text-slate-900">Đối tác thanh toán</h3>
           <p className="mt-2 max-w-5xl text-sm leading-6 text-slate-700">
-            Chung toi hop tac voi cac nha cung cap dich vu thanh toan hang dau de dam bao moi giao dich deu suon se,
-            an toan va de dang.
+            Chúng tôi hợp tác với các nhà cung cấp dịch vụ thanh toán hàng đầu để đảm bảo mọi giao dịch đều suôn sẻ,
+            an toàn và dễ dàng.
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-8">

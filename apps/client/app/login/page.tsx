@@ -27,14 +27,14 @@ export default function LoginPage() {
             <button
               type="button"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-white/45 text-base font-semibold"
-              aria-label="Ngon ngu"
+              aria-label="Ngôn ngữ"
             >
               VN
             </button>
             <button
               type="button"
               className="flex h-8 w-8 items-center justify-center rounded-full border border-white/45"
-              aria-label="Tro giup"
+              aria-label="Trợ giúp"
             >
               <CircleHelp className="size-4" />
             </button>
@@ -59,14 +59,14 @@ export default function LoginPage() {
 
         <div className="flex items-start px-5 pb-16 pt-8 md:px-8 md:pt-10 lg:justify-end lg:px-12 xl:px-16">
           <div className="w-full max-w-[560px]">
-            <h1 className="text-center text-[2.1rem] font-bold leading-tight text-slate-900">Dang nhap</h1>
+            <h1 className="text-center text-[2.1rem] font-bold leading-tight text-slate-900">Đăng nhập</h1>
             <p className="mt-5 max-w-[520px] text-[1.05rem] leading-8 text-slate-800">
-              Ban co the dang nhap tai khoan SmartStay cua minh de truy cap cac dich vu quan ly khach san.
+              Bạn có thể đăng nhập tài khoản SmartStay của mình để truy cập các dịch vụ quản lý khách sạn.
             </p>
 
             <form className="mt-7">
               <label htmlFor="loginInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-                {loginMode === "email" ? "Dia chi email" : "So dien thoai"}
+                {loginMode === "email" ? "Địa chỉ email" : "Số điện thoại"}
               </label>
               <div className="flex items-center gap-2">
                 {loginMode === "email" ? (
@@ -75,7 +75,7 @@ export default function LoginPage() {
                     type="email"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    placeholder="Nhap dia chi email cua ban"
+                    placeholder="Nhập địa chỉ email của bạn"
                     className="h-13 flex-1 rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
                   />
                 ) : (
@@ -91,7 +91,7 @@ export default function LoginPage() {
                       pattern="[0-9]*"
                       value={phone}
                       onChange={(event) => setPhone(event.target.value.replace(/\D/g, ""))}
-                      placeholder="Nhap so dien thoai"
+                      placeholder="Nhập số điện thoại"
                       className="h-full flex-1 bg-white px-4 text-[1.03rem] text-slate-900 outline-none"
                     />
                   </div>
@@ -99,7 +99,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setLoginMode((mode) => (mode === "email" ? "phone" : "email"))}
-                  aria-label={loginMode === "email" ? "Chuyen sang dang nhap bang so dien thoai" : "Chuyen sang dang nhap bang email"}
+                  aria-label={loginMode === "email" ? "Chuyển sang đăng nhập bằng số điện thoại" : "Chuyển sang đăng nhập bằng email"}
                   className="flex h-13 w-13 items-center justify-center rounded-[8px] border border-slate-300 bg-white text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
                 >
                   {loginMode === "email" ? <Phone className="size-5" /> : <Mail className="size-5" />}
@@ -110,13 +110,13 @@ export default function LoginPage() {
                 type="submit"
                 className="glossy-button mt-5 h-14 w-full rounded-[6px] text-xl font-semibold text-white"
               >
-                Tiep tuc
+                Tiếp tục
               </Button>
             </form>
 
             <div className="my-9 flex items-center gap-4">
               <div className="h-px flex-1 bg-slate-300" />
-              <p className="text-[1.05rem] text-slate-900">hoac su dung mot trong cac lua chon nay</p>
+              <p className="text-[1.05rem] text-slate-900">hoặc sử dụng một trong các lựa chọn này</p>
               <div className="h-px flex-1 bg-slate-300" />
             </div>
 
@@ -124,21 +124,21 @@ export default function LoginPage() {
               <button
                 type="button"
                 className="flex h-22 w-22 items-center justify-center rounded-[6px] border border-slate-300 bg-white text-[2.4rem] font-semibold text-[#ea4335] transition hover:border-slate-400"
-                aria-label="Dang nhap bang Google"
+                aria-label="Đăng nhập bằng Google"
               >
                 G
               </button>
               <button
                 type="button"
                 className="flex h-22 w-22 items-center justify-center rounded-[6px] border border-slate-300 bg-white text-[2.4rem] font-semibold text-black transition hover:border-slate-400"
-                aria-label="Dang nhap bang Apple"
+                aria-label="Đăng nhập bằng Apple"
               >
                 A
               </button>
               <button
                 type="button"
                 className="flex h-22 w-22 items-center justify-center rounded-[6px] border border-slate-300 bg-white text-[2.4rem] font-bold text-[#1877f2] transition hover:border-slate-400"
-                aria-label="Dang nhap bang Facebook"
+                aria-label="Đăng nhập bằng Facebook"
               >
                 f
               </button>
@@ -146,18 +146,18 @@ export default function LoginPage() {
 
             <div className="border-t border-slate-300 pt-6 text-center">
               <p className="mx-auto max-w-[540px] text-base leading-8 text-slate-900">
-                Qua viec dang nhap hoac tao tai khoan, ban dong y voi cac{" "}
+                Qua việc đăng nhập hoặc tạo tài khoản, bạn đồng ý với các{" "}
                 <Link href="#" className="text-[#5a9aac] hover:underline">
-                  Dieu khoan va Dieu kien
+                  Điều khoản và Điều kiện
                 </Link>{" "}
                 cung nhu{" "}
                 <Link href="#" className="text-[#5a9aac] hover:underline">
-                  Chinh sach Bao mat
+                  Chính sách Bảo mật
                 </Link>{" "}
-                cua chung toi
+                của chúng tôi
               </p>
-              <p className="mt-5 text-[1.05rem]">Bao luu moi quyen.</p>
-              <p className="mt-1 text-[1.05rem]">Ban quyen {new Date().getFullYear()} - SmartStay.com</p>
+              <p className="mt-5 text-[1.05rem]">Bảo lưu mọi quyền.</p>
+              <p className="mt-1 text-[1.05rem]">Bản quyền {new Date().getFullYear()} - SmartStay.com</p>
             </div>
           </div>
         </div>

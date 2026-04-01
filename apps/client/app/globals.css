@@ -5,6 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+    --shared-top-menu-height: 78px;
+    --results-search-bar-height: 92px;
     --marina-ice: #f4f6f7;
     --marina-cloud: #e8edf0;
     --marina-sea: #7dc0d1;
@@ -187,6 +189,229 @@ body {
     );
     pointer-events: none;
     z-index: 1;
+}
+
+.deal-loop {
+    position: relative;
+}
+
+@keyframes pageEnter {
+    0% {
+        opacity: 0;
+        filter: blur(6px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+.page-transition {
+    animation: pageEnter 884ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, filter;
+}
+
+body {
+    transition: opacity 260ms ease, filter 260ms ease, transform 260ms ease;
+}
+
+body.page-transitioning {
+    opacity: 0.74;
+    filter: blur(4px);
+    transform: translateY(8px);
+}
+
+@keyframes resultListHorizontalEnter {
+    0% {
+        opacity: 0.72;
+        transform: translateY(12px) scale(0.972);
+        filter: blur(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes resultListVerticalEnter {
+    0% {
+        opacity: 0.74;
+        transform: translateY(10px) scale(0.968);
+        filter: blur(7px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.result-list-transition > article {
+    will-change: opacity, transform, filter;
+    transform-origin: 50% 50%;
+}
+
+.result-hotel-card,
+.result-hotel-media,
+.result-hotel-body,
+.result-hotel-content,
+.result-hotel-side {
+    transition-property: transform, opacity, filter, padding, gap, width, min-width, border-color, box-shadow;
+    transition-duration: 420ms;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.result-list-horizontal > article {
+    animation: resultListHorizontalEnter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.result-list-vertical > article {
+    animation: resultListVerticalEnter 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.result-list-transition > article:nth-child(1) {
+    animation-delay: 0ms;
+}
+
+.result-list-transition > article:nth-child(2) {
+    animation-delay: 30ms;
+}
+
+.result-list-transition > article:nth-child(3) {
+    animation-delay: 60ms;
+}
+
+.result-list-transition > article:nth-child(4) {
+    animation-delay: 90ms;
+}
+
+.result-list-transition > article:nth-child(5) {
+    animation-delay: 120ms;
+}
+
+.result-list-transition > article:nth-child(6) {
+    animation-delay: 150ms;
+}
+
+.result-list-morphing .result-hotel-card {
+    transform: scale(0.985);
+}
+
+.result-list-morphing .result-hotel-media {
+    transform: scale(0.985);
+    filter: saturate(0.98);
+}
+
+.result-list-morphing .result-hotel-body {
+    transform: scale(0.992);
+}
+
+.result-list-horizontal.result-list-morphing .result-hotel-content {
+    transform: scale(1.01);
+}
+
+.result-list-vertical.result-list-morphing .result-hotel-content {
+    transform: scale(0.985);
+}
+
+.result-list-horizontal.result-list-morphing .result-hotel-side,
+.result-list-vertical.result-list-morphing .result-hotel-side {
+    transform: scale(0.97);
+    opacity: 0.92;
+}
+
+.range-thumb-primary::-webkit-slider-runnable-track {
+    height: 0;
+}
+
+.range-thumb-primary::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    pointer-events: auto;
+    margin-top: -14px;
+    height: 28px;
+    width: 28px;
+    border-radius: 9999px;
+    border: 1px solid #d8dde3;
+    background: #ffffff;
+    box-shadow: 0 1px 6px rgba(15, 23, 42, 0.08);
+    cursor: pointer;
+}
+
+.range-thumb-primary::-moz-range-track {
+    height: 0;
+    background: transparent;
+}
+
+.range-thumb-primary::-moz-range-thumb {
+    pointer-events: auto;
+    height: 28px;
+    width: 28px;
+    border-radius: 9999px;
+    border: 1px solid #d8dde3;
+    background: #ffffff;
+    box-shadow: 0 1px 6px rgba(15, 23, 42, 0.08);
+    cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .page-transition {
+        animation: none;
+    }
+
+    .result-list-transition > article {
+        animation: none;
+    }
+
+    .result-hotel-card,
+    .result-hotel-media,
+    .result-hotel-body,
+    .result-hotel-content,
+    .result-hotel-side {
+        transition: none;
+    }
+}
+
+@view-transition {
+    navigation: auto;
+}
+
+::view-transition-old(root) {
+    animation: pageOut 320ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+    animation: pageIn 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes pageOut {
+    from {
+        opacity: 1;
+        filter: blur(0);
+    }
+    to {
+        opacity: 0.08;
+        filter: blur(8px);
+    }
+}
+
+@keyframes pageIn {
+    from {
+        opacity: 0;
+        filter: blur(10px);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
 }
 
 @keyframes hotelFade {
