@@ -1,0 +1,24 @@
+{
+  "name": "smartstay/payment-service",
+  "description": "SmartStay Payment Service RESTful API",
+  "type": "project",
+  "license": "proprietary",
+  "require": {
+    "php": "^8.2",
+    "slim/slim": "^4.14",
+    "slim/psr7": "^1.7",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "PaymentService\\": "src/"
+    }
+  },
+  "scripts": {
+    "start": "php -S 0.0.0.0:8082 -t public",
+    "test": "@php -r \"echo 'No test suite configured yet.' . PHP_EOL;\""
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
+
