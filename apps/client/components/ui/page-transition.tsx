@@ -12,13 +12,14 @@ export default function PageTransition({ children, className = "" }: PageTransit
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const transitionKey = `${pathname}?${searchParams.toString()}`;
+  const isAuthRoute = pathname === "/login" || pathname === "/register";
 
   useEffect(() => {
     document.body.classList.remove("page-transitioning");
   }, [transitionKey]);
 
   return (
-    <div key={transitionKey} className={`page-transition ${className}`.trim()}>
+    <div key={transitionKey} className={`${isAuthRoute ? "" : "page-transition"} ${className}`.trim()}>
       {children}
     </div>
   );

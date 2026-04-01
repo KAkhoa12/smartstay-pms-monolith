@@ -172,6 +172,45 @@ body {
     will-change: opacity, filter;
 }
 
+.auth-panel-transition {
+    animation: pageEnter 420ms cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, filter;
+}
+
+.auth-panel-transition-left {
+    animation: authPanelSlideLeft 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.auth-panel-transition-right {
+    animation: authPanelSlideRight 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes authPanelSlideLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(42px);
+        filter: blur(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0);
+    }
+}
+
+@keyframes authPanelSlideRight {
+    0% {
+        opacity: 0;
+        transform: translateX(-42px);
+        filter: blur(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+        filter: blur(0);
+    }
+}
+
 body {
     transition: opacity 260ms ease, filter 260ms ease, transform 260ms ease;
 }
@@ -321,6 +360,18 @@ body.page-transitioning {
         animation: none;
     }
 
+    .auth-panel-transition {
+        animation: none;
+    }
+
+    .auth-panel-transition-left {
+        animation: none;
+    }
+
+    .auth-panel-transition-right {
+        animation: none;
+    }
+
     .result-list-transition > article {
         animation: none;
     }
@@ -331,47 +382,6 @@ body.page-transitioning {
     .result-hotel-content,
     .result-hotel-side {
         transition: none;
-    }
-}
-
-@view-transition {
-    navigation: auto;
-}
-
-::view-transition-old(root) {
-    animation: pageOut 320ms cubic-bezier(0.4, 0, 1, 1) both;
-}
-
-::view-transition-new(root) {
-    animation: pageIn 560ms cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-@keyframes pageOut {
-    from {
-        opacity: 1;
-        filter: blur(0);
-    }
-    to {
-        opacity: 0.08;
-        filter: blur(8px);
-    }
-}
-
-@keyframes pageIn {
-    from {
-        opacity: 0;
-        filter: blur(10px);
-    }
-    to {
-        opacity: 1;
-        filter: blur(0);
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-        animation: none;
     }
 }
 
