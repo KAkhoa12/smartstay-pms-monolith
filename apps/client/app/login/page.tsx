@@ -108,7 +108,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="glossy-button mt-5 h-14 w-full rounded-[6px] text-xl font-semibold text-white"
+                className="mt-5 h-14 w-full rounded-[6px] bg-[#006ce4] text-xl font-semibold text-white hover:bg-[#0059c2]"
               >
                 Tiep tuc
               </Button>
@@ -147,11 +147,11 @@ export default function LoginPage() {
             <div className="border-t border-slate-300 pt-6 text-center">
               <p className="mx-auto max-w-[540px] text-base leading-8 text-slate-900">
                 Qua viec dang nhap hoac tao tai khoan, ban dong y voi cac{" "}
-                <Link href="#" className="text-[#5a9aac] hover:underline">
+                <Link href="#" className="text-[#006ce4] hover:underline">
                   Dieu khoan va Dieu kien
                 </Link>{" "}
                 cung nhu{" "}
-                <Link href="#" className="text-[#5a9aac] hover:underline">
+                <Link href="#" className="text-[#006ce4] hover:underline">
                   Chinh sach Bao mat
                 </Link>{" "}
                 cua chung toi

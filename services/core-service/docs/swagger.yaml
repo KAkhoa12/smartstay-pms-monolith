@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: SmartStay Auth Service
+  version: 0.1.0
+paths:
+  /healthz:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+  /v1/auth/register:
+    post:
+      summary: Register new user
+      requestBody:
+        required: true
+      responses:
+        "201":
+          description: Created
+  /v1/auth/login:
+    post:
+      summary: Login with email/password
+      requestBody:
+        required: true
+      responses:
+        "200":
+          description: OK

@@ -38,14 +38,14 @@
     --chart-4: #486f86;
     --chart-5: #355064;
     --radius: 0.625rem;
-    --sidebar: #ffffff;
-    --sidebar-foreground: #2f3f4d;
-    --sidebar-primary: #5a9aac;
-    --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #e8edf0;
-    --sidebar-accent-foreground: #355064;
-    --sidebar-border: #d4dde2;
-    --sidebar-ring: #74b1c1;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
 }
 
 @theme inline {
@@ -119,45 +119,6 @@ body {
     border: 1px solid rgba(226, 232, 240, 0.9);
     background: rgba(255, 255, 255, 0.92);
     box-shadow: var(--shadow-brand);
-}
-
-.glass-panel {
-    border: 1px solid rgba(255, 255, 255, 0.72);
-    background:
-        linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.65) 0%,
-            rgba(255, 255, 255, 0.26) 100%
-        );
-    backdrop-filter: blur(6px);
-    box-shadow:
-        0 22px 42px rgba(25, 49, 67, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.62);
-}
-
-.glossy-button {
-    background-image: linear-gradient(
-        180deg,
-        #9ad2de 0%,
-        #72b8c9 44%,
-        #5da7bb 100%
-    );
-    box-shadow:
-        0 10px 22px rgba(68, 128, 146, 0.34),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-}
-
-.glossy-button:hover {
-    background-image: linear-gradient(
-        180deg,
-        #a8dbe5 0%,
-        #7ec0cf 44%,
-        #659fb2 100%
-    );
-}
-
-.marina-header {
-    background-image: linear-gradient(120deg, #5b8ca1 0%, #6ca8ba 60%, #87c8d6 100%);
 }
 
 .hotel-slider {
