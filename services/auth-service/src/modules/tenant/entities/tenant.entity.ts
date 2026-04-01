@@ -10,8 +10,41 @@ export class Tenant {
   @Column({ type: 'varchar', length: 150 })
   name: string;
 
+  @Column({ name: 'legal_name', type: 'varchar', length: 150, nullable: true })
+  legalName: string | null;
+
   @Column({ type: 'varchar', length: 100, unique: true, nullable: true })
-  domain: string;
+  domain: string | null;
+
+  @Column({ name: 'business_type', type: 'varchar', length: 100, nullable: true })
+  businessType: string | null;
+
+  @Column({ name: 'tax_code', type: 'varchar', length: 50, nullable: true })
+  taxCode: string | null;
+
+  @Column({ name: 'contact_email', type: 'varchar', length: 100, nullable: true })
+  contactEmail: string | null;
+
+  @Column({ name: 'contact_phone', type: 'varchar', length: 30, nullable: true })
+  contactPhone: string | null;
+
+  @Column({ name: 'website_url', type: 'varchar', length: 255, nullable: true })
+  websiteUrl: string | null;
+
+  @Column({ name: 'address_line', type: 'varchar', length: 255, nullable: true })
+  addressLine: string | null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  city: string | null;
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  country: string | null;
+
+  @Column({ name: 'company_size', type: 'varchar', length: 50, nullable: true })
+  companySize: string | null;
+
+  @Column({ name: 'hotel_count', type: 'int', default: 1 })
+  hotelCount: number;
 
   @Column({ name: 'plan_type', type: 'varchar', length: 50, default: 'FREE' })
   planType: string;
