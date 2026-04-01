@@ -13,6 +13,7 @@ Tài liệu này tổng hợp các bộ kỹ năng theo đúng hiện trạng m�
 - [server-core-service-go.md](./server/server-core-service-go.md)
 - [server-architecture-alignment.md](./server/server-architecture-alignment.md)
 - [server-payment-service-php-restfulapi.md](./server/server-payment-service-php-restfulapi.md)
+- [server-ai-service-fastapi.md](./server/server-ai-service-fastapi.md)
 
 ### Platform
 - [platform-local-devops.md](./platform/platform-local-devops.md)
@@ -24,4 +25,5 @@ Tài liệu này tổng hợp các bộ kỹ năng theo đúng hiện trạng m�
 - `services/auth-service`: NestJS, TypeORM, JWT, mô hình vai trò đa tenant.
 - `services/core-service`: Go service cho auth flow, có migration và config YAML.
 - `services/payment-service`: đã bootstrap PHP RESTful API theo Slim Framework.
-- `services/api-gateway`, `services/ai-service`: chưa có implementation.
+- `services/ai-service`: định hướng FastAPI (đã có tài liệu kỹ năng tương ứng).
+- `services/api-gateway`: chưa có implementation.
