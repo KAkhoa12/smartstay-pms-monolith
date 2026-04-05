@@ -15,6 +15,6 @@ export const SEARCH_SUBMIT_BUTTON =
 
 export const LOCATION_PANEL_CLASS = "absolute left-0 right-0 top-[calc(100%+6px)] z-30 p-3";
 export const DATE_PANEL_CLASS =
-  "absolute left-1/2 top-[calc(100%+6px)] z-30 w-[430px] -translate-x-1/2 p-4";
+  "absolute left-1/2 top-[calc(100%+6px)] z-30 w-[min(94vw,800px)] -translate-x-1/2 p-2";
 export const GUEST_PANEL_CLASS =
   "absolute left-1/2 top-[calc(100%+6px)] z-30 w-[215px] -translate-x-1/2 p-3";

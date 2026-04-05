@@ -5,10 +5,7 @@ import { useRouter } from "next/navigation";
 import {
   Baby,
   BedSingle,
-  CalendarDays,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   DoorOpen,
   Funnel,
   MapPin,
@@ -17,6 +14,7 @@ import {
   UserRound,
 } from "lucide-react";
 import DestinationRequiredMessage from "@/components/ui/destination-required-message";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import DropdownPanel from "@/components/ui/dropdown-panel";
 import useOutsideDismiss from "@/components/ui/use-outside-dismiss";
 import {
@@ -112,16 +110,6 @@ export default function SharedSearchShell({
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [isGuestOpen, setIsGuestOpen] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
-  const [displayMonth, setDisplayMonth] = useState(() => {
-    if (initialCheckIn) {
-      const parsed = new Date(initialCheckIn);
-      if (!Number.isNaN(parsed.getTime())) {
-        return new Date(parsed.getFullYear(), parsed.getMonth(), 1);
-      }
-    }
-    const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), 1);
-  });
 
   useEffect(() => {
     const syncCompactState = () => {
@@ -197,11 +185,6 @@ export default function SharedSearchShell({
       ? `${selectedDistrict.name}, ${selectedProvince?.name ?? ""}`
       : selectedProvince?.name ?? (destinationFromQuery || "Ban muon den dau?");
 
-  const dateLabel =
-    checkIn && checkOut
-      ? `${new Date(checkIn).toLocaleDateString("vi-VN")} - ${new Date(checkOut).toLocaleDateString("vi-VN")}`
-      : "Nhan phong - Tra phong";
-
   const stayDurationLabel = useMemo(() => {
     if (!checkIn || !checkOut) return "Thoi gian: Chua chon";
     const inDate = new Date(checkIn);
@@ -210,39 +193,10 @@ export default function SharedSearchShell({
     return `Thoi gian: ${nights} dem`;
   }, [checkIn, checkOut]);
 
-  const monthTitle = displayMonth.toLocaleDateString("vi-VN", { month: "long", year: "numeric" });
-  const monthStartWeekday = (displayMonth.getDay() + 6) % 7;
-  const daysInMonth = new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 0).getDate();
-  const dayLabels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-
   const toggleSearchDropdown = (target: "destination" | "date" | "guest") => {
     setIsDestinationOpen((prev) => (target === "destination" ? !prev : false));
     setIsDateOpen((prev) => (target === "date" ? !prev : false));
     setIsGuestOpen((prev) => (target === "guest" ? !prev : false));
-  };
-
-  const toIsoDate = (year: number, month: number, day: number) => {
-    const mm = String(month + 1).padStart(2, "0");
-    const dd = String(day).padStart(2, "0");
-    return `${year}-${mm}-${dd}`;
-  };
-
-  const handlePickDate = (day: number) => {
-    const picked = toIsoDate(displayMonth.getFullYear(), displayMonth.getMonth(), day);
-
-    if (!checkIn || (checkIn && checkOut)) {
-      setCheckIn(picked);
-      setCheckOut("");
-      return;
-    }
-
-    if (picked < checkIn) {
-      setCheckIn(picked);
-      return;
-    }
-
-    setCheckOut(picked);
-    setIsDateOpen(false);
   };
 
   const handleProvinceChange = async (provinceCode: string) => {
@@ -423,65 +377,28 @@ export default function SharedSearchShell({
             </div>
 
             <div className="relative">
-              <button type="button" onClick={() => toggleSearchDropdown("date")} className={SEARCH_DATE_TRIGGER}>
-                <CalendarDays className="size-4 text-slate-500" />
-                <span className="truncate text-sm font-semibold">{dateLabel}</span>
-                <ChevronDown className="ml-auto size-4 text-slate-500" />
-              </button>
+              <DateRangePicker
+                checkIn={checkIn}
+                checkOut={checkOut}
+                onChange={({ checkIn: nextCheckIn, checkOut: nextCheckOut }) => {
+                  setCheckIn(nextCheckIn);
+                  setCheckOut(nextCheckOut);
+                }}
+                open={isDateOpen}
+                onOpenChange={(open) => {
+                  setIsDateOpen(open);
+                  if (open) {
+                    setIsDestinationOpen(false);
+                    setIsGuestOpen(false);
+                  }
+                }}
+                triggerClassName={SEARCH_DATE_TRIGGER}
+                dropdownClassName={DATE_PANEL_CLASS}
+                placeholder="Nhan phong - Tra phong"
+              />
               <p className={`px-1 text-slate-500 transition-all duration-300 ${isCompact ? "pt-0 text-[11px]" : "pt-0.5 text-xs"}`}>
                 {stayDurationLabel}
               </p>
-              {isDateOpen ? (
-                <DropdownPanel className={DATE_PANEL_CLASS}>
-                  <p className="mb-2 text-center text-sm font-medium text-[#5a9aac]">Lich</p>
-                  <div className="mb-3 flex items-center justify-between border-t border-[#8fb9c5] pt-2">
-                    <button type="button" onClick={() => setDisplayMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Thang truoc">
-                      <ChevronLeft className="size-4" />
-                    </button>
-                    <p className="text-lg font-semibold capitalize text-slate-800">{monthTitle}</p>
-                    <button type="button" onClick={() => setDisplayMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))} className="rounded p-1 text-slate-500 hover:bg-slate-100" aria-label="Thang sau">
-                      <ChevronRight className="size-4" />
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-7 gap-1.5 text-center text-sm text-slate-600">
-                    {dayLabels.map((label) => (
-                      <div key={label} className="py-1 font-medium">
-                        {label}
-                      </div>
-                    ))}
-                    {Array.from({ length: monthStartWeekday }).map((_, idx) => (
-                      <div key={`empty-${idx}`} />
-                    ))}
-                    {Array.from({ length: daysInMonth }).map((_, idx) => {
-                      const day = idx + 1;
-                      const iso = toIsoDate(displayMonth.getFullYear(), displayMonth.getMonth(), day);
-                      const isStart = iso === checkIn;
-                      const isEnd = iso === checkOut;
-                      const isWeekend = (monthStartWeekday + idx) % 7 === 5 || (monthStartWeekday + idx) % 7 === 6;
-                      const isInRange = Boolean(checkIn) && Boolean(checkOut) && iso > checkIn && iso < checkOut;
-
-                      return (
-                        <button
-                          key={iso}
-                          type="button"
-                          onClick={() => handlePickDate(day)}
-                          className={`h-10 rounded-full border text-sm transition ${
-                            isStart || isEnd
-                              ? "border-[#0b84ff] bg-white font-bold text-[#0b84ff] shadow-[inset_0_0_0_1px_rgba(11,132,255,0.18)]"
-                              : isInRange
-                                ? "border-transparent bg-[#dff0ff] font-semibold text-[#183b67]"
-                                : isWeekend
-                                  ? "border-transparent text-[#e02424] hover:bg-[#fff1f1]"
-                                  : "border-transparent text-slate-700 hover:bg-slate-100"
-                          }`}
-                        >
-                          {day}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </DropdownPanel>
-              ) : null}
             </div>
 
             <div className="relative">

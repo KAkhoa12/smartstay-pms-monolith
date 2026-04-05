@@ -56,7 +56,7 @@ export function AuthShell({ children }: AuthShellProps) {
           <div className="hotel-slide-overlay" />
         </div>
 
-        <div className="flex items-start px-5 pb-16 pt-8 md:px-8 md:pt-10 lg:justify-end lg:px-12 xl:px-16">
+        <div className="flex items-start justify-center px-5 pb-16 pt-10 md:px-8 md:pt-12 lg:px-12 xl:px-16">
           <div className="w-full max-w-[560px]">{children}</div>
         </div>
       </section>

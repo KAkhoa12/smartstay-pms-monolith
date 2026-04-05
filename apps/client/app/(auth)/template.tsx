@@ -3,6 +3,12 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
+const isAuthFlowPath = (pathname: string) =>
+  pathname === "/login" ||
+  pathname === "/register" ||
+  pathname === "/forgot-password" ||
+  pathname.startsWith("/forgot-password/");
+
 export default function AuthTemplate({
   children,
 }: Readonly<{
@@ -14,16 +20,19 @@ export default function AuthTemplate({
       return "fade";
     }
 
-    const previousPath = window.sessionStorage.getItem("auth:last-path");
-    if (previousPath === "/login" && pathname === "/register") {
-      return "left";
+    const previousPath = window.sessionStorage.getItem("auth:last-path") ?? "";
+    const isPreviousAuthFlowPath = isAuthFlowPath(previousPath);
+    const isCurrentAuthFlowPath = isAuthFlowPath(pathname);
+
+    if (!isPreviousAuthFlowPath || !isCurrentAuthFlowPath || previousPath === pathname) {
+      return "fade";
     }
 
-    if (previousPath === "/register" && pathname === "/login") {
+    if (pathname === "/login" && previousPath !== "/login") {
       return "right";
     }
 
-    return "fade";
+    return "left";
   })();
 
   useEffect(() => {

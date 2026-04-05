@@ -1,38 +1,19 @@
-version: "3.9"
-
 services:
-  postgres:
-    image: postgres:16
-    container_name: smartstay-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: smartstay_auth
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   auth-service:
     build:
       context: ./services/auth-service
-      dockerfile: deployments/Dockerfile
+      dockerfile: Dockerfile
     container_name: smartstay-auth-service
-    depends_on:
-      - postgres
     environment:
       APP_ENV: dev
       PORT: 8081
       CONFIG_PATH: configs/config.dev.yaml
-      DB_HOST: postgres
+      DB_HOST: host.docker.internal
       DB_PORT: 5432
       DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_NAME: smartstay_auth
+      DB_PASSWORD: admin
+      DB_NAME: auth_service
       DB_SSL_MODE: disable
       JWT_SECRET: local-dev-secret
     ports:
       - "8081:8081"
-
-volumes:
-  postgres_data:

@@ -1,37 +1,40 @@
 "use client";
 
-import { type FormEvent, useEffect, useState } from "react";
+import { Suspense, type FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Mail, Phone } from "lucide-react";
+import { AuthNotice } from "@/components/auth/auth-notice";
 import { Button } from "@/components/ui/button";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [loginMode, setLoginMode] = useState<"email" | "phone">("email");
   const registeredEmail = searchParams.get("email") ?? "";
   const isRegistered = searchParams.get("registered") === "1";
+  const isPasswordReset = searchParams.get("passwordReset") === "1";
+  const [showRegisteredNotice, setShowRegisteredNotice] = useState(isRegistered);
+  const [showPasswordResetNotice, setShowPasswordResetNotice] = useState(isPasswordReset);
   const [email, setEmail] = useState(registeredEmail);
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (registeredEmail) {
       setEmail(registeredEmail);
-      setLoginMode("email");
     }
   }, [registeredEmail]);
 
+  useEffect(() => {
+    setShowRegisteredNotice(isRegistered);
+  }, [isRegistered]);
+
+  useEffect(() => {
+    setShowPasswordResetNotice(isPasswordReset);
+  }, [isPasswordReset]);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (loginMode !== "email") {
-      setErrorMessage("Dang nhap bang so dien thoai chua duoc ket noi backend.");
-      return;
-    }
 
     const trimmedEmail = email.trim().toLowerCase();
 
@@ -77,7 +80,7 @@ export default function LoginPage() {
       window.localStorage.setItem("smartstay_refresh_token", data.payload.refreshToken);
       window.localStorage.setItem("smartstay_user", JSON.stringify(data.payload.user ?? null));
 
-      router.push("/home");
+      router.push("/booking");
     } catch {
       setErrorMessage("Khong the dang nhap luc nay. Vui long thu lai.");
     } finally {
@@ -89,62 +92,41 @@ export default function LoginPage() {
     <>
       <h1 className="text-center text-[2.1rem] font-bold leading-tight text-slate-900">Dang nhap</h1>
       <p className="mt-5 max-w-[520px] text-[1.05rem] leading-8 text-slate-800">
-        Ban co the dang nhap tai khoan SmartStay cua minh de truy cap cac dich vu quan ly khach san.
+        Dang nhap tai khoan SmartStay de tim kiem phong, dat phong va quan ly chuyen di cua ban.
       </p>
 
       <form className="mt-7" onSubmit={handleSubmit}>
-        {isRegistered ? (
-          <div className="mb-4 rounded-[8px] border border-[#9fd7ab] bg-[#effaf2] px-4 py-3 text-sm text-[#18794e]">
-            Dang ky thanh cong. Ban co the dang nhap ngay bay gio.
-          </div>
+        {showRegisteredNotice ? (
+          <AuthNotice
+            message="Dang ky thanh cong. Ban co the dang nhap ngay bay gio."
+            variant="success"
+            onClose={() => setShowRegisteredNotice(false)}
+          />
+        ) : null}
+
+        {showPasswordResetNotice ? (
+          <AuthNotice
+            message="Doi mat khau thanh cong. Hay dang nhap bang mat khau moi."
+            variant="success"
+            onClose={() => setShowPasswordResetNotice(false)}
+          />
         ) : null}
 
         {errorMessage ? (
-          <div className="mb-4 rounded-[8px] border border-[#f1b7b7] bg-[#fff1f1] px-4 py-3 text-sm text-[#b42318]">
-            {errorMessage}
-          </div>
+          <AuthNotice message={errorMessage} variant="error" onClose={() => setErrorMessage("")} />
         ) : null}
 
         <label htmlFor="loginInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-          {loginMode === "email" ? "Dia chi email" : "So dien thoai"}
+          Dia chi email
         </label>
-        <div className="flex items-center gap-2">
-          {loginMode === "email" ? (
-            <input
-              id="loginInput"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="Nhap dia chi email cua ban"
-              className="h-13 flex-1 rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          ) : (
-            <div className="flex h-13 flex-1 overflow-hidden rounded-[8px] border-2 border-[#8fcad9] bg-white shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]">
-              <div className="flex w-[12.5%] min-w-[56px] items-center justify-center text-[1.03rem] font-semibold text-slate-900">
-                +84
-              </div>
-              <div className="w-px bg-slate-300/70" />
-              <input
-                id="loginInput"
-                type="tel"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                value={phone}
-                onChange={(event) => setPhone(event.target.value.replace(/\D/g, ""))}
-                placeholder="Nhap so dien thoai"
-                className="h-full flex-1 bg-white px-4 text-[1.03rem] text-slate-900 outline-none"
-              />
-            </div>
-          )}
-          <button
-            type="button"
-            onClick={() => setLoginMode((mode) => (mode === "email" ? "phone" : "email"))}
-            aria-label={loginMode === "email" ? "Chuyen sang dang nhap bang so dien thoai" : "Chuyen sang dang nhap bang email"}
-            className="flex h-13 w-13 items-center justify-center rounded-[8px] border border-slate-300 bg-white text-slate-700 transition hover:border-slate-400 hover:text-slate-900"
-          >
-            {loginMode === "email" ? <Phone className="size-5" /> : <Mail className="size-5" />}
-          </button>
-        </div>
+        <input
+          id="loginInput"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="Nhap dia chi email cua ban"
+          className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
+        />
 
         <div className="mt-5">
           <label htmlFor="passwordInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
@@ -159,7 +141,7 @@ export default function LoginPage() {
             className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
           />
           <div className="mt-3 text-right">
-            <Link href="#" className="text-[1rem] font-medium text-[#5a9aac] hover:underline">
+            <Link href="/forgot-password" className="text-[1rem] font-medium text-[#5a9aac] hover:underline">
               Quen mat khau?
             </Link>
           </div>
@@ -227,5 +209,13 @@ export default function LoginPage() {
         <p className="mt-1 text-[1.05rem]">Ban quyen {new Date().getFullYear()} - SmartStay.com</p>
       </div>
     </>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[320px]" />}>
+      <LoginPageContent />
+    </Suspense>
   );
 }

@@ -10,10 +10,11 @@ import { RefreshToken } from '../refresh-token/entities/refresh-token.entity';
 import { Tenant } from '../tenant/entities/tenant.entity';
 import { Role } from '../role/entities/role.entity';
 import { UserTenantRole } from '../user-tenant-role/entities/user-tenant-role.entity';
+import { PasswordResetOtp } from './entities/password-reset-otp.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, RefreshToken, Tenant, Role, UserTenantRole]),
+    TypeOrmModule.forFeature([User, RefreshToken, Tenant, Role, UserTenantRole, PasswordResetOtp]),
     PassportModule,
     JwtModule.register({}),
   ],

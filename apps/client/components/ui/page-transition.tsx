@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 type PageTransitionProps = Readonly<{
   children: React.ReactNode;
@@ -10,8 +10,7 @@ type PageTransitionProps = Readonly<{
 
 export default function PageTransition({ children, className = "" }: PageTransitionProps) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const transitionKey = `${pathname}?${searchParams.toString()}`;
+  const transitionKey = pathname;
   const isAuthRoute = pathname === "/login" || pathname === "/register";
 
   useEffect(() => {

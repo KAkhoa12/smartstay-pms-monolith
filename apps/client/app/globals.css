@@ -185,6 +185,53 @@ body {
     animation: authPanelSlideRight 420ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.account-dropdown-fall {
+    animation: accountDropdownFall 320ms cubic-bezier(0.18, 1, 0.32, 1);
+    transform-origin: top center;
+    will-change: transform, opacity, filter;
+}
+
+.account-dropdown-frost::before {
+    mix-blend-mode: screen;
+}
+
+.account-dropdown-grain::after {
+    content: none;
+}
+
+.account-dropdown-grain {
+    background-image:
+        radial-gradient(circle at 18% 24%, rgba(255, 255, 255, 0.62) 0.88px, transparent 1.25px),
+        radial-gradient(circle at 73% 38%, rgba(255, 255, 255, 0.5) 0.75px, transparent 1.12px),
+        radial-gradient(circle at 41% 72%, rgba(255, 255, 255, 0.42) 0.78px, transparent 1.17px),
+        radial-gradient(circle at 84% 79%, rgba(241, 245, 249, 0.38) 0.86px, transparent 1.3px),
+        radial-gradient(circle at 29% 61%, rgba(255, 255, 255, 0.34) 0.68px, transparent 1.09px),
+        radial-gradient(circle at 57% 19%, rgba(255, 255, 255, 0.48) 0.73px, transparent 1.12px),
+        radial-gradient(circle at 12% 83%, rgba(248, 250, 252, 0.34) 0.81px, transparent 1.22px),
+        radial-gradient(circle at 91% 15%, rgba(255, 255, 255, 0.28) 0.65px, transparent 1.07px),
+        linear-gradient(180deg, rgba(247, 250, 252, 0.46), rgba(220, 227, 235, 0.34));
+    background-position: 0 0, 8px 12px, 15px 6px, 5px 18px, 18px 10px, 11px 4px, 3px 14px, 16px 2px, 0 0;
+    background-size: 17px 20px, 16px 22px, 20px 17px, 21px 18px, 14px 17px, 18px 16px, 16px 21px, 13px 14px, 100% 100%;
+}
+
+@keyframes accountDropdownFall {
+    0% {
+        opacity: 0;
+        transform: translateY(-22px) scale(0.96);
+        filter: blur(10px);
+    }
+    68% {
+        opacity: 1;
+        transform: translateY(4px) scale(1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
 @keyframes authPanelSlideLeft {
     0% {
         opacity: 0;
@@ -369,6 +416,10 @@ body.page-transitioning {
     }
 
     .auth-panel-transition-right {
+        animation: none;
+    }
+
+    .account-dropdown-fall {
         animation: none;
     }
 

@@ -25,7 +25,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${AUTH_SERVICE_URL}/auth/login/business`, {
+    const response = await fetch(`${AUTH_SERVICE_URL}/auth/login/customer`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

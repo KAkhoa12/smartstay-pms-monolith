@@ -1,6 +1,6 @@
 "use client";
 
-import { type FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, type FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -17,6 +17,7 @@ import {
 import SharedSearchShell from "@/components/booking/shared-search-shell";
 import DestinationRequiredMessage from "@/components/ui/destination-required-message";
 import DropdownPanel from "@/components/ui/dropdown-panel";
+import { Slider } from "@/components/ui/slider";
 import useOutsideDismiss from "@/components/ui/use-outside-dismiss";
 import {
   Baby,
@@ -40,6 +41,8 @@ import {
   UserRound,
   X,
 } from "lucide-react";
+
+export const dynamic = "force-dynamic";
 
 type ResultViewMode = "horizontal" | "vertical";
 type SortOption = { key: string; label: string };
@@ -291,7 +294,7 @@ const getHotelDiscountPercent = (price: string, oldPrice: string) => {
   return Math.round(((previousPrice - currentPrice) / previousPrice) * 100);
 };
 
-export default function BookingResultsPage() {
+function BookingResultsPageContent() {
   const RESULTS_SEARCH_EXPANDED_HEIGHT = 92;
   const RESULTS_SEARCH_COMPACT_HEIGHT = 74;
   const RESULTS_SEARCH_COMPACT_THRESHOLD = 72;
@@ -672,12 +675,11 @@ export default function BookingResultsPage() {
     setResultViewMode(nextMode);
   };
 
-  const handlePriceRangeMinChange = (value: number) => {
-    setPriceRangeMin(Math.min(value, priceRangeMax - PRICE_RANGE_STEP));
-  };
+  const handlePriceRangeChange = (nextRange: number[]) => {
+    const [nextMin = PRICE_RANGE_MIN, nextMax = PRICE_RANGE_MAX] = nextRange;
 
-  const handlePriceRangeMaxChange = (value: number) => {
-    setPriceRangeMax(Math.max(value, priceRangeMin + PRICE_RANGE_STEP));
+    setPriceRangeMin(nextMin);
+    setPriceRangeMax(nextMax);
   };
 
   useEffect(() => {
@@ -689,9 +691,6 @@ export default function BookingResultsPage() {
 
     return () => window.clearTimeout(timeoutId);
   }, [isResultViewAnimating]);
-
-  const priceRangeStartPercent = ((priceRangeMin - PRICE_RANGE_MIN) / (PRICE_RANGE_MAX - PRICE_RANGE_MIN)) * 100;
-  const priceRangeEndPercent = ((priceRangeMax - PRICE_RANGE_MIN) / (PRICE_RANGE_MAX - PRICE_RANGE_MIN)) * 100;
 
   const stepper = (value: number, min: number, max: number, setValue: (value: number) => void) => (
     <div className="inline-flex items-center rounded-md border border-slate-300 bg-white">
@@ -722,34 +721,15 @@ export default function BookingResultsPage() {
           </button>
         </div>
         <div className="mt-5 px-1">
-          <div className="relative h-9">
-            <div className="absolute top-1/2 h-[3px] w-full -translate-y-1/2 rounded-full bg-[#d4d9df]" />
-            <div
-              className="absolute top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-[#0095ff]"
-              style={{
-                left: `${priceRangeStartPercent}%`,
-                width: `${priceRangeEndPercent - priceRangeStartPercent}%`,
-              }}
-            />
-            <input
-              type="range"
-              min={PRICE_RANGE_MIN}
-              max={PRICE_RANGE_MAX}
-              step={PRICE_RANGE_STEP}
-              value={priceRangeMin}
-              onChange={(event) => handlePriceRangeMinChange(Number(event.target.value))}
-              className="range-thumb-primary pointer-events-none absolute inset-0 w-full appearance-none bg-transparent"
-            />
-            <input
-              type="range"
-              min={PRICE_RANGE_MIN}
-              max={PRICE_RANGE_MAX}
-              step={PRICE_RANGE_STEP}
-              value={priceRangeMax}
-              onChange={(event) => handlePriceRangeMaxChange(Number(event.target.value))}
-              className="range-thumb-primary pointer-events-none absolute inset-0 w-full appearance-none bg-transparent"
-            />
-          </div>
+          <Slider
+            value={[priceRangeMin, priceRangeMax]}
+            min={PRICE_RANGE_MIN}
+            max={PRICE_RANGE_MAX}
+            step={PRICE_RANGE_STEP}
+            minStepsBetweenThumbs={1}
+            onValueChange={handlePriceRangeChange}
+            className="w-full"
+          />
         </div>
         <div className="mt-4 flex items-center justify-between gap-3">
           <div className="flex min-w-0 items-center overflow-hidden rounded-full border border-[#cfd6dd] bg-white text-[0.72rem] font-semibold text-slate-900 shadow-sm">
@@ -1274,5 +1254,13 @@ export default function BookingResultsPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+export default function BookingResultsPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen bg-[#eef3f7]" />}>
+      <BookingResultsPageContent />
+    </Suspense>
   );
 }

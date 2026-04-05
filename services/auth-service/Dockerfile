@@ -31,7 +31,7 @@ RUN npm install --only=production
 COPY --from=builder /app/dist ./dist
 
 # Mở port (thường là 3000 cho NestJS hoặc port bạn chọn cho Auth Service)
-EXPOSE 3000
+EXPOSE 8081
 
 # Lệnh khởi chạy ứng dụng
 CMD ["node", "dist/main"]

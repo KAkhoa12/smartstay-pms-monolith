@@ -6,6 +6,7 @@ type RegisterPayload = {
   email?: string;
   password?: string;
   fullName?: string;
+  phoneNumber?: string;
 };
 
 type ApiResponse<T> = {
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await fetch(`${AUTH_SERVICE_URL}/auth/register/business`, {
+    const response = await fetch(`${AUTH_SERVICE_URL}/auth/register/customer`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

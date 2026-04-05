@@ -2,7 +2,7 @@
   "info": {
     "name": "SmartStay Auth API",
     "_postman_id": "7d2de56f-0a43-4dc4-94fb-bd798436c1d7",
-    "description": "Collection test register, login, me, refresh, logout for SmartStay auth-service.",
+    "description": "Collection test business auth, customer auth, token flow, and forgot-password OTP for SmartStay auth-service.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -71,10 +71,6 @@
       "value": "3"
     },
     {
-      "key": "domain",
-      "value": "smartstay.vn"
-    },
-    {
       "key": "customerEmail",
       "value": "customer@example.com"
     },
@@ -93,11 +89,14 @@
     {
       "key": "refreshToken",
       "value": ""
+    },
+    {
+      "key": "otpPreview",
+      "value": ""
     }
   ],
   "item": [
     {
-      "name": "Register",
       "name": "Business Register",
       "request": {
         "method": "POST",
@@ -109,7 +108,7 @@
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"email\": \"{{businessEmail}}\",\n  \"password\": \"{{password}}\",\n  \"fullName\": \"{{businessFullName}}\",\n  \"companyName\": \"{{companyName}}\",\n  \"legalName\": \"{{legalName}}\",\n  \"businessType\": \"{{businessType}}\",\n  \"taxCode\": \"{{taxCode}}\",\n  \"phoneNumber\": \"{{phoneNumber}}\",\n  \"jobTitle\": \"{{jobTitle}}\",\n  \"websiteUrl\": \"{{websiteUrl}}\",\n  \"addressLine\": \"{{addressLine}}\",\n  \"city\": \"{{city}}\",\n  \"country\": \"{{country}}\",\n  \"companySize\": \"{{companySize}}\",\n  \"hotelCount\": {{hotelCount}},\n  \"domain\": \"{{domain}}\"\n}"
+          "raw": "{\n  \"email\": \"{{businessEmail}}\",\n  \"password\": \"{{password}}\",\n  \"fullName\": \"{{businessFullName}}\",\n  \"companyName\": \"{{companyName}}\",\n  \"legalName\": \"{{legalName}}\",\n  \"businessType\": \"{{businessType}}\",\n  \"taxCode\": \"{{taxCode}}\",\n  \"phoneNumber\": \"{{phoneNumber}}\",\n  \"jobTitle\": \"{{jobTitle}}\",\n  \"websiteUrl\": \"{{websiteUrl}}\",\n  \"addressLine\": \"{{addressLine}}\",\n  \"city\": \"{{city}}\",\n  \"country\": \"{{country}}\",\n  \"companySize\": \"{{companySize}}\",\n  \"hotelCount\": {{hotelCount}}\n}"
         },
         "url": {
           "raw": "{{baseUrl}}/auth/register/business",
@@ -131,7 +130,8 @@
             "exec": [
               "const json = pm.response.json();",
               "if (json.payload && json.payload.accessToken) pm.collectionVariables.set('accessToken', json.payload.accessToken);",
-              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);"
+              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);",
+              "pm.test('Business register success', function () { pm.expect(json.success).to.eql(true); });"
             ]
           }
         }
@@ -171,7 +171,8 @@
             "exec": [
               "const json = pm.response.json();",
               "if (json.payload && json.payload.accessToken) pm.collectionVariables.set('accessToken', json.payload.accessToken);",
-              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);"
+              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);",
+              "pm.test('Business login success', function () { pm.expect(json.success).to.eql(true); });"
             ]
           }
         }
@@ -211,7 +212,8 @@
             "exec": [
               "const json = pm.response.json();",
               "if (json.payload && json.payload.accessToken) pm.collectionVariables.set('accessToken', json.payload.accessToken);",
-              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);"
+              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);",
+              "pm.test('Customer register success', function () { pm.expect(json.success).to.eql(true); });"
             ]
           }
         }
@@ -251,7 +253,8 @@
             "exec": [
               "const json = pm.response.json();",
               "if (json.payload && json.payload.accessToken) pm.collectionVariables.set('accessToken', json.payload.accessToken);",
-              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);"
+              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);",
+              "pm.test('Customer login success', function () { pm.expect(json.success).to.eql(true); });"
             ]
           }
         }
@@ -277,7 +280,19 @@
             "me"
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Me success', function () { pm.expect(json.success).to.eql(true); });"
+            ]
+          }
+        }
+      ]
     },
     {
       "name": "Refresh",
@@ -312,7 +327,8 @@
             "exec": [
               "const json = pm.response.json();",
               "if (json.payload && json.payload.accessToken) pm.collectionVariables.set('accessToken', json.payload.accessToken);",
-              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);"
+              "if (json.payload && json.payload.refreshToken) pm.collectionVariables.set('refreshToken', json.payload.refreshToken);",
+              "pm.test('Refresh success', function () { pm.expect(json.success).to.eql(true); });"
             ]
           }
         }
@@ -342,7 +358,176 @@
             "logout"
           ]
         }
-      }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Logout success', function () { pm.expect(json.success).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forgot Password Request",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{customerEmail}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/forgot-password/request",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "forgot-password",
+            "request"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "if (json.payload && json.payload.otpPreview) pm.collectionVariables.set('otpPreview', json.payload.otpPreview);",
+              "pm.test('Forgot password request success', function () { pm.expect(json.success).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forgot Password Verify OTP (Saved OTP Preview)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"otp\": \"{{otpPreview}}\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/forgot-password/verify-otp",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "forgot-password",
+            "verify-otp"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Forgot password verify success', function () { pm.expect(json.success).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forgot Password Verify OTP",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"otp\": \"123456\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/forgot-password/verify-otp",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "forgot-password",
+            "verify-otp"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Forgot password verify success', function () { pm.expect(json.success).to.eql(true); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forgot Password Reset Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{customerEmail}}\",\n  \"otp\": \"{{otpPreview}}\",\n  \"newPassword\": \"newStrongPassword123\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/forgot-password/reset-password",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "auth",
+            "forgot-password",
+            "reset-password"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "const json = pm.response.json();",
+              "pm.test('Forgot password reset success', function () { pm.expect(json.success).to.eql(true); });"
+            ]
+          }
+        }
+      ]
     }
   ]
 }

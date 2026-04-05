@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto';
 import { User } from '../users/entities/user.entity';
 import { RefreshToken } from '../refresh-token/entities/refresh-token.entity';
 import { JwtPayload } from './types/jwt-payload.type';
@@ -15,6 +16,7 @@ import { Role } from '../role/entities/role.entity';
 import { UserTenantRole } from '../user-tenant-role/entities/user-tenant-role.entity';
 import { BusinessRegisterDto } from './dto/business-register.dto';
 import { CustomerRegisterDto } from './dto/customer-register.dto';
+import { PasswordResetOtp } from './entities/password-reset-otp.entity';
 
 export interface AuthTokens {
   accessToken: string;
@@ -44,6 +46,8 @@ export class AuthService {
     private readonly roleRepo: Repository<Role>,
     @InjectRepository(UserTenantRole)
     private readonly userTenantRoleRepo: Repository<UserTenantRole>,
+    @InjectRepository(PasswordResetOtp)
+    private readonly passwordResetOtpRepo: Repository<PasswordResetOtp>,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource,
   ) {}
@@ -254,6 +258,127 @@ export class AuthService {
     };
   }
 
+  async requestPasswordReset(email: string) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.userRepo.findOne({ where: { email: normalizedEmail } });
+
+    if (!user) {
+      return {
+        email: normalizedEmail,
+        expiresInSeconds: 600,
+        delivery: 'accepted',
+      };
+    }
+
+    await this.passwordResetOtpRepo.update({ userId: user.id, isUsed: false }, { isUsed: true });
+
+    const rawOtp = this.generateOtp();
+    const otpHash = await bcrypt.hash(rawOtp, 10);
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+    const passwordResetOtp = new PasswordResetOtp();
+    passwordResetOtp.userId = user.id;
+    passwordResetOtp.email = normalizedEmail;
+    passwordResetOtp.otpHash = otpHash;
+    passwordResetOtp.expiresAt = expiresAt;
+    passwordResetOtp.isUsed = false;
+    passwordResetOtp.attemptCount = 0;
+
+    await this.passwordResetOtpRepo.save(passwordResetOtp);
+
+    const emailDelivery = await this.sendPasswordResetOtpEmail(normalizedEmail, rawOtp);
+
+    return {
+      email: normalizedEmail,
+      expiresInSeconds: 600,
+      delivery: emailDelivery.delivery,
+      otpPreview: emailDelivery.otpPreview,
+    };
+  }
+
+  async verifyPasswordResetOtp(email: string, otp: string) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedOtp = otp.trim();
+
+    const latestOtp = await this.passwordResetOtpRepo.findOne({
+      where: { email: normalizedEmail, isUsed: false },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (!latestOtp) {
+      throw new BadRequestException('OTP not found');
+    }
+
+    if (latestOtp.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException('OTP has expired');
+    }
+
+    if (latestOtp.attemptCount >= 5) {
+      throw new BadRequestException('OTP has exceeded the allowed number of attempts');
+    }
+
+    const matched = await bcrypt.compare(normalizedOtp, latestOtp.otpHash);
+    if (!matched) {
+      latestOtp.attemptCount += 1;
+      await this.passwordResetOtpRepo.save(latestOtp);
+      throw new BadRequestException('OTP is invalid');
+    }
+
+    return {
+      email: normalizedEmail,
+      verified: true,
+    };
+  }
+
+  async resetPassword(email: string, otp: string, newPassword: string) {
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedOtp = otp.trim();
+
+    if (!newPassword?.trim()) {
+      throw new BadRequestException('New password is required');
+    }
+
+    const user = await this.userRepo.findOne({ where: { email: normalizedEmail } });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const latestOtp = await this.passwordResetOtpRepo.findOne({
+      where: { email: normalizedEmail, isUsed: false },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (!latestOtp) {
+      throw new BadRequestException('OTP not found');
+    }
+
+    if (latestOtp.expiresAt.getTime() < Date.now()) {
+      throw new BadRequestException('OTP has expired');
+    }
+
+    if (latestOtp.attemptCount >= 5) {
+      throw new BadRequestException('OTP has exceeded the allowed number of attempts');
+    }
+
+    const matched = await bcrypt.compare(normalizedOtp, latestOtp.otpHash);
+    if (!matched) {
+      latestOtp.attemptCount += 1;
+      await this.passwordResetOtpRepo.save(latestOtp);
+      throw new BadRequestException('OTP is invalid');
+    }
+
+    user.passwordHash = await bcrypt.hash(newPassword.trim(), 10);
+    await this.userRepo.save(user);
+
+    latestOtp.isUsed = true;
+    await this.passwordResetOtpRepo.save(latestOtp);
+
+    return {
+      email: normalizedEmail,
+      passwordReset: true,
+    };
+  }
+
   private async issueTokens(user: User, deviceInfo?: string, ipAddress?: string): Promise<AuthTokens> {
     const accessPayload: JwtPayload = {
       sub: user.id,
@@ -388,5 +513,49 @@ export class AuthService {
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 100);
+  }
+
+  private generateOtp() {
+    return String(crypto.randomInt(100000, 1000000));
+  }
+
+  private async sendPasswordResetOtpEmail(email: string, otp: string) {
+    const host = process.env.SMTP_HOST;
+    const port = Number(process.env.SMTP_PORT ?? 587);
+    const user = process.env.SMTP_USER;
+    const pass = process.env.SMTP_PASS;
+    const from = process.env.SMTP_FROM ?? user ?? 'no-reply@smartstay.local';
+    const appEnv = process.env.APP_ENV ?? 'dev';
+
+    if (!host || !user || !pass) {
+      return {
+        delivery: 'mock',
+        otpPreview: appEnv === 'prod' ? undefined : otp,
+      };
+    }
+
+    const nodemailer = await import('nodemailer');
+    const transporter = nodemailer.createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: {
+        user,
+        pass,
+      },
+    });
+
+    await transporter.sendMail({
+      from,
+      to: email,
+      subject: 'SmartStay password reset OTP',
+      text: `Your SmartStay OTP is ${otp}. This code will expire in 10 minutes.`,
+      html: `<p>Your SmartStay OTP is <strong>${otp}</strong>.</p><p>This code will expire in 10 minutes.</p>`,
+    });
+
+    return {
+      delivery: 'email',
+      otpPreview: undefined,
+    };
   }
 }

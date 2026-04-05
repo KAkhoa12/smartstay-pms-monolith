@@ -3,25 +3,14 @@
 import { type FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { AuthNotice } from "@/components/auth/auth-notice";
 import { Button } from "@/components/ui/button";
 
 export default function RegisterPage() {
   const router = useRouter();
   const [fullName, setFullName] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [legalName, setLegalName] = useState("");
-  const [businessType, setBusinessType] = useState("");
-  const [taxCode, setTaxCode] = useState("");
-  const [websiteUrl, setWebsiteUrl] = useState("");
-  const [addressLine, setAddressLine] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("Vietnam");
-  const [companySize, setCompanySize] = useState("");
-  const [hotelCount, setHotelCount] = useState("1");
-  const [domain, setDomain] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -33,8 +22,9 @@ export default function RegisterPage() {
 
     const trimmedFullName = fullName.trim();
     const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPhoneNumber = phoneNumber.trim();
 
-    if (!trimmedFullName || !trimmedEmail || !companyName.trim() || !password || !confirmPassword) {
+    if (!trimmedFullName || !trimmedEmail || !password || !confirmPassword) {
       setSuccessMessage("");
       setErrorMessage("Vui long nhap day du thong tin.");
       return;
@@ -59,19 +49,7 @@ export default function RegisterPage() {
         body: JSON.stringify({
           fullName: trimmedFullName,
           email: trimmedEmail,
-          companyName: companyName.trim(),
-          legalName: legalName.trim(),
-          businessType: businessType.trim(),
-          taxCode: taxCode.trim(),
-          phoneNumber: phoneNumber.trim(),
-          jobTitle: jobTitle.trim(),
-          websiteUrl: websiteUrl.trim(),
-          addressLine: addressLine.trim(),
-          city: city.trim(),
-          country: country.trim(),
-          companySize: companySize.trim(),
-          hotelCount: Number(hotelCount) || 1,
-          domain: domain.trim(),
+          phoneNumber: trimmedPhoneNumber,
           password,
         }),
       });
@@ -91,20 +69,8 @@ export default function RegisterPage() {
 
       setSuccessMessage("Dang ky thanh cong. Dang chuyen ban den trang dang nhap...");
       setFullName("");
-      setJobTitle("");
       setPhoneNumber("");
       setEmail("");
-      setCompanyName("");
-      setLegalName("");
-      setBusinessType("");
-      setTaxCode("");
-      setWebsiteUrl("");
-      setAddressLine("");
-      setCity("");
-      setCountry("Vietnam");
-      setCompanySize("");
-      setHotelCount("1");
-      setDomain("");
       setPassword("");
       setConfirmPassword("");
 
@@ -122,20 +88,16 @@ export default function RegisterPage() {
     <>
       <h1 className="text-center text-[2.1rem] font-bold leading-tight text-slate-900">Dang ky</h1>
       <p className="mt-5 max-w-[520px] text-[1.05rem] leading-8 text-slate-800">
-        Tao tai khoan SmartStay de bat dau su dung cac cong cu quan ly va dich vu cho luu tru.
+        Tao tai khoan SmartStay de tim kiem phong, dat phong nhanh va theo doi chuyen di cua ban.
       </p>
 
       <form className="mt-7" onSubmit={handleSubmit}>
         {errorMessage ? (
-          <div className="mb-4 rounded-[8px] border border-[#f1b7b7] bg-[#fff1f1] px-4 py-3 text-sm text-[#b42318]">
-            {errorMessage}
-          </div>
+          <AuthNotice message={errorMessage} variant="error" onClose={() => setErrorMessage("")} />
         ) : null}
 
         {successMessage ? (
-          <div className="mb-4 rounded-[8px] border border-[#9fd7ab] bg-[#effaf2] px-4 py-3 text-sm text-[#18794e]">
-            {successMessage}
-          </div>
+          <AuthNotice message={successMessage} variant="success" onClose={() => setSuccessMessage("")} />
         ) : null}
 
         <div>
@@ -153,29 +115,15 @@ export default function RegisterPage() {
         </div>
 
         <div className="mt-5">
-          <label htmlFor="jobTitleInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-            Chuc vu
-          </label>
-          <input
-            id="jobTitleInput"
-            type="text"
-            value={jobTitle}
-            onChange={(event) => setJobTitle(event.target.value)}
-            placeholder="Vi du: Giam doc van hanh"
-            className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-          />
-        </div>
-
-        <div className="mt-5">
           <label htmlFor="phoneNumberInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-            So dien thoai lien he
+            So dien thoai
           </label>
           <input
             id="phoneNumberInput"
             type="tel"
             value={phoneNumber}
             onChange={(event) => setPhoneNumber(event.target.value)}
-            placeholder="Nhap so dien thoai doanh nghiep"
+            placeholder="Nhap so dien thoai cua ban"
             className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
           />
         </div>
@@ -190,161 +138,6 @@ export default function RegisterPage() {
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder="Nhap dia chi email cua ban"
-            className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-          />
-        </div>
-
-        <div className="mt-5">
-          <label htmlFor="companyNameInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-            Ten doanh nghiep
-          </label>
-          <input
-            id="companyNameInput"
-            type="text"
-            value={companyName}
-            onChange={(event) => setCompanyName(event.target.value)}
-            placeholder="Nhap ten thuong mai doanh nghiep"
-            className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-          />
-        </div>
-
-        <div className="mt-5">
-          <label htmlFor="legalNameInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-            Ten phap ly
-          </label>
-          <input
-            id="legalNameInput"
-            type="text"
-            value={legalName}
-            onChange={(event) => setLegalName(event.target.value)}
-            placeholder="Nhap ten phap ly neu co"
-            className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-          />
-        </div>
-
-        <div className="mt-5 grid gap-5 md:grid-cols-2">
-          <div>
-            <label htmlFor="businessTypeInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-              Linh vuc kinh doanh
-            </label>
-            <input
-              id="businessTypeInput"
-              type="text"
-              value={businessType}
-              onChange={(event) => setBusinessType(event.target.value)}
-              placeholder="Vi du: Hospitality"
-              className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          </div>
-          <div>
-            <label htmlFor="taxCodeInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-              Ma so thue
-            </label>
-            <input
-              id="taxCodeInput"
-              type="text"
-              value={taxCode}
-              onChange={(event) => setTaxCode(event.target.value)}
-              placeholder="Nhap ma so thue"
-              className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          </div>
-        </div>
-
-        <div className="mt-5 grid gap-5 md:grid-cols-2">
-          <div>
-            <label htmlFor="websiteUrlInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-              Website
-            </label>
-            <input
-              id="websiteUrlInput"
-              type="url"
-              value={websiteUrl}
-              onChange={(event) => setWebsiteUrl(event.target.value)}
-              placeholder="https://company.vn"
-              className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          </div>
-          <div>
-            <label htmlFor="domainInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-              Domain doanh nghiep
-            </label>
-            <input
-              id="domainInput"
-              type="text"
-              value={domain}
-              onChange={(event) => setDomain(event.target.value)}
-              placeholder="company.vn"
-              className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <label htmlFor="addressLineInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-            Dia chi doanh nghiep
-          </label>
-          <input
-            id="addressLineInput"
-            type="text"
-            value={addressLine}
-            onChange={(event) => setAddressLine(event.target.value)}
-            placeholder="Nhap dia chi doanh nghiep"
-            className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-          />
-        </div>
-
-        <div className="mt-5 grid gap-5 md:grid-cols-3">
-          <div>
-            <label htmlFor="cityInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-              Thanh pho
-            </label>
-            <input
-              id="cityInput"
-              type="text"
-              value={city}
-              onChange={(event) => setCity(event.target.value)}
-              placeholder="Ho Chi Minh City"
-              className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          </div>
-          <div>
-            <label htmlFor="countryInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-              Quoc gia
-            </label>
-            <input
-              id="countryInput"
-              type="text"
-              value={country}
-              onChange={(event) => setCountry(event.target.value)}
-              className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          </div>
-          <div>
-            <label htmlFor="hotelCountInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-              So co so luu tru
-            </label>
-            <input
-              id="hotelCountInput"
-              type="number"
-              min="1"
-              value={hotelCount}
-              onChange={(event) => setHotelCount(event.target.value)}
-              className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
-            />
-          </div>
-        </div>
-
-        <div className="mt-5">
-          <label htmlFor="companySizeInput" className="mb-2 block text-[1.1rem] font-semibold text-slate-900">
-            Quy mo doanh nghiep
-          </label>
-          <input
-            id="companySizeInput"
-            type="text"
-            value={companySize}
-            onChange={(event) => setCompanySize(event.target.value)}
-            placeholder="Vi du: 11-50 nhan su"
             className="h-13 w-full rounded-[8px] border-2 border-[#8fcad9] bg-white px-4 text-[1.03rem] text-slate-900 outline-none transition shadow-[inset_0_1px_0_rgba(255,255,255,0.82)]"
           />
         </div>

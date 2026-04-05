@@ -2,12 +2,18 @@
 
 ## Muc tieu
 
-Tai lieu nay dung de test luong dang ky, dang nhap, refresh token, logout va lay thong tin nguoi dung bang Postman.
+Tai lieu nay dung de test cac luong auth hien co bang Postman:
 
-He thong da duoc tach thanh 2 nhom tai khoan:
-
-- `BUSINESS`: tai khoan doanh nghiep, co tao `tenant` va `memberships`
-- `CUSTOMER`: tai khoan khach hang, chi tao `user`, khong tao `tenant`
+- Dang ky doanh nghiep
+- Dang nhap doanh nghiep
+- Dang ky khach hang
+- Dang nhap khach hang
+- Lay thong tin user
+- Refresh token
+- Logout
+- Quen mat khau: gui OTP qua email
+- Quen mat khau: xac thuc OTP
+- Quen mat khau: doi mat khau moi
 
 ## Format response chung
 
@@ -67,7 +73,6 @@ Tat ca auth API deu tra ve theo format:
 
 - Ky vong:
   - HTTP `201` hoac `200`
-  - Response:
 
 ```json
 {
@@ -108,7 +113,6 @@ Tat ca auth API deu tra ve theo format:
 
 - Ky vong:
   - HTTP `201` hoac `200`
-  - Response:
 
 ```json
 {
@@ -140,7 +144,7 @@ Tat ca auth API deu tra ve theo format:
 
 ```json
 {
-  "email": "customer1@example.com",
+  "email": "customer@example.com",
   "password": "123456",
   "fullName": "Customer Demo",
   "phoneNumber": "+84901111222"
@@ -149,7 +153,6 @@ Tat ca auth API deu tra ve theo format:
 
 - Ky vong:
   - HTTP `201` hoac `200`
-  - Response:
 
 ```json
 {
@@ -176,7 +179,7 @@ Tat ca auth API deu tra ve theo format:
 
 ```json
 {
-  "email": "customer1@example.com",
+  "email": "customer@example.com",
   "password": "123456",
   "deviceInfo": "Postman on Windows",
   "ipAddress": "127.0.0.1"
@@ -185,7 +188,6 @@ Tat ca auth API deu tra ve theo format:
 
 - Ky vong:
   - HTTP `201` hoac `200`
-  - Response:
 
 ```json
 {
@@ -211,7 +213,6 @@ Tat ca auth API deu tra ve theo format:
 
 - Ky vong:
   - HTTP `200`
-  - Response:
 
 ```json
 {
@@ -253,6 +254,20 @@ Tat ca auth API deu tra ve theo format:
 }
 ```
 
+- Ky vong:
+  - HTTP `201` hoac `200`
+
+```json
+{
+  "success": true,
+  "message": "Refresh token successful",
+  "payload": {
+    "accessToken": "new_access_token",
+    "refreshToken": "new_refresh_token"
+  }
+}
+```
+
 ## 7. Logout
 
 - Method: `POST`
@@ -267,13 +282,171 @@ Tat ca auth API deu tra ve theo format:
 }
 ```
 
+- Ky vong:
+  - HTTP `201` hoac `200`
+
+```json
+{
+  "success": true,
+  "message": "Logout successful",
+  "payload": {
+    "success": true
+  }
+}
+```
+
+## 8. Quen mat khau - Gui OTP
+
+- Method: `POST`
+- URL: `http://localhost:8081/auth/forgot-password/request`
+- Headers:
+  - `Content-Type: application/json`
+- Body:
+
+```json
+{
+  "email": "customer@example.com"
+}
+```
+
+- Ky vong:
+  - HTTP `200`
+
+```json
+{
+  "success": true,
+  "message": "OTP sent successfully",
+  "payload": {
+    "email": "customer@example.com",
+    "expiresInSeconds": 600,
+    "delivery": "email"
+  }
+}
+```
+
+- Ghi chu:
+  - Neu chua cau hinh SMTP, backend co the tra them `otpPreview` trong `payload` de test local
+  - Khi co SMTP that, OTP se duoc gui ve email
+
+## Dieu kien de OTP gui duoc qua email that
+
+De API `POST /auth/forgot-password/request` gui OTP ve email that, can dam bao:
+
+- `auth-service` dang chay
+- PostgreSQL dang ket noi thanh cong
+- da cau hinh SMTP hop le
+
+### Cau hinh SMTP voi Gmail
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=dangphamdangkhoa21@gmail.com
+SMTP_PASS=YOUR_NEW_APP_PASSWORD
+SMTP_FROM=dangphamdangkhoa21@gmail.com
+```
+
+### Cach xac nhan da gui mail that
+
+Neu thanh cong, response se co:
+
+```json
+{
+  "success": true,
+  "message": "OTP sent successfully",
+  "payload": {
+    "email": "customer@example.com",
+    "expiresInSeconds": 600,
+    "delivery": "email"
+  }
+}
+```
+
+Neu response van la:
+
+```json
+{
+  "success": true,
+  "message": "OTP sent successfully",
+  "payload": {
+    "delivery": "mock",
+    "otpPreview": "123456"
+  }
+}
+```
+
+thi nghia la backend chua doc du bien SMTP that.
+
+## 9. Quen mat khau - Xac thuc OTP
+
+- Method: `POST`
+- URL: `http://localhost:8081/auth/forgot-password/verify-otp`
+- Headers:
+  - `Content-Type: application/json`
+- Body:
+
+```json
+{
+  "email": "customer@example.com",
+  "otp": "123456"
+}
+```
+
+- Ky vong:
+  - HTTP `200`
+
+```json
+{
+  "success": true,
+  "message": "OTP verified successfully",
+  "payload": {
+    "email": "customer@example.com",
+    "verified": true
+  }
+}
+```
+
+## 10. Quen mat khau - Doi mat khau moi
+
+- Method: `POST`
+- URL: `http://localhost:8081/auth/forgot-password/reset-password`
+- Headers:
+  - `Content-Type: application/json`
+- Body:
+
+```json
+{
+  "email": "customer@example.com",
+  "otp": "123456",
+  "newPassword": "newStrongPassword123"
+}
+```
+
+- Ky vong:
+  - HTTP `200`
+
+```json
+{
+  "success": true,
+  "message": "Password reset successful",
+  "payload": {
+    "email": "customer@example.com",
+    "passwordReset": true
+  }
+}
+```
+
 ## Thu tu test khuyen nghi tren Postman
 
 1. Goi `Business Register` hoac `Customer Register`
-2. Lay `accessToken` va `refreshToken`
-3. Goi `Me`
-4. Goi `Refresh`
-5. Goi `Logout`
+2. Goi `Business Login` hoac `Customer Login`
+3. Lay `accessToken` va `refreshToken`
+4. Goi `Me`
+5. Goi `Refresh`
+6. Goi `Logout`
+7. Goi `Forgot Password Request`
+8. Goi `Forgot Password Verify OTP`
+9. Goi `Forgot Password Reset Password`
 
 ## Luu y
 
@@ -288,3 +461,8 @@ Tat ca auth API deu tra ve theo format:
   "payload": {}
 }
 ```
+
+- Frontend web hien tai luu token vao `localStorage` voi cac key:
+  - `smartstay_access_token`
+  - `smartstay_refresh_token`
+  - `smartstay_user`

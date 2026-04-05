@@ -64,8 +64,8 @@ export default function HotelDetailTabs() {
       const stickyOffset = getStickyOffset();
       const activationLine = stickyOffset + ACTIVATION_BUFFER;
       const sections = SCROLL_TRACKED_SECTION_IDS.map((sectionId) => document.getElementById(sectionId))
-        .filter(Boolean)
-        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top) as HTMLElement[];
+        .filter((section): section is HTMLElement => section !== null)
+        .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top);
 
       if (!sections.length) return;
 

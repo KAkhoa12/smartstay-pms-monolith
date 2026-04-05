@@ -16,6 +16,9 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { LogoutDto } from './dto/logout.dto';
 import { BusinessRegisterDto } from './dto/business-register.dto';
 import { CustomerRegisterDto } from './dto/customer-register.dto';
+import { RequestPasswordResetDto } from './dto/request-password-reset.dto';
+import { VerifyPasswordResetOtpDto } from './dto/verify-password-reset-otp.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 interface JwtRequest extends Request {
   user: {
@@ -51,6 +54,24 @@ export class AuthController {
   async loginCustomer(@Body() body: LoginDto) {
     const payload = await this.authService.loginCustomer(body.email, body.password, body.deviceInfo, body.ipAddress);
     return buildApiResponse(true, 'Customer login successful', payload);
+  }
+
+  @Post('forgot-password/request')
+  async requestPasswordReset(@Body() body: RequestPasswordResetDto) {
+    const payload = await this.authService.requestPasswordReset(body.email);
+    return buildApiResponse(true, 'OTP sent successfully', payload);
+  }
+
+  @Post('forgot-password/verify-otp')
+  async verifyPasswordResetOtp(@Body() body: VerifyPasswordResetOtpDto) {
+    const payload = await this.authService.verifyPasswordResetOtp(body.email, body.otp);
+    return buildApiResponse(true, 'OTP verified successfully', payload);
+  }
+
+  @Post('forgot-password/reset-password')
+  async resetPassword(@Body() body: ResetPasswordDto) {
+    const payload = await this.authService.resetPassword(body.email, body.otp, body.newPassword);
+    return buildApiResponse(true, 'Password reset successful', payload);
   }
 
   @Post('refresh')

@@ -3,7 +3,19 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { BedDouble, Building2, Car, Hotel, LogIn, Plane } from "lucide-react";
+import {
+  BedDouble,
+  Building2,
+  Car,
+  CircleUserRound,
+  Heart,
+  Hotel,
+  LogIn,
+  LogOut,
+  LucideIcon,
+  Plane,
+  WalletCards,
+} from "lucide-react";
 
 const navItems = [
   { href: "/booking", label: "Dat phong", icon: BedDouble },
@@ -11,6 +23,20 @@ const navItems = [
   { href: "/flight-hotel", label: "Chuyen bay + Khach san", icon: Hotel },
   { href: "/car-rental", label: "Thue xe", icon: Car },
   { href: "/airport-taxi", label: "Taxi san bay", icon: Car },
+];
+
+const accountMenuItems: Array<{
+  label: string;
+  icon: LucideIcon;
+  href?: string;
+  action?: "logout";
+}> = [
+  { label: "Tai khoan", icon: CircleUserRound, href: "/account" },
+  { label: "Dat cho & Chuyen di", icon: BedDouble, href: "/booking" },
+  { label: "Chuong trinh khach hang than thiet Genius", icon: Building2, href: "#" },
+  { label: "Tang thuong & Vi", icon: WalletCards, href: "#" },
+  { label: "Da luu", icon: Heart, href: "#" },
+  { label: "Dang xuat", icon: LogOut, action: "logout" },
 ];
 
 const EXPANDED_HEIGHT = 70;
@@ -22,6 +48,11 @@ type SharedTopMenuProps = {
   compact?: boolean;
   fixed?: boolean;
   autoCompact?: boolean;
+};
+
+type SmartstayUser = {
+  fullName?: string | null;
+  email?: string | null;
 };
 
 const getMenuItemClassName = (pathname: string, href: string, isCompact: boolean) => {
@@ -42,8 +73,11 @@ export default function SharedTopMenu({ compact = false, fixed = false, autoComp
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(compact);
   const [activePillStyle, setActivePillStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const [currentUser, setCurrentUser] = useState<SmartstayUser | null>(null);
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const frameRef = useRef<number | null>(null);
   const navRef = useRef<HTMLElement | null>(null);
+  const accountMenuRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
   const isCompact = compact || isScrolled;
 
@@ -100,6 +134,42 @@ export default function SharedTopMenu({ compact = false, fixed = false, autoComp
     );
   }, [isCompact]);
 
+  useEffect(() => {
+    const syncCurrentUser = () => {
+      try {
+        const rawUser = window.localStorage.getItem("smartstay_user");
+        setCurrentUser(rawUser ? (JSON.parse(rawUser) as SmartstayUser) : null);
+      } catch {
+        setCurrentUser(null);
+      }
+    };
+
+    syncCurrentUser();
+    window.addEventListener("storage", syncCurrentUser);
+
+    return () => {
+      window.removeEventListener("storage", syncCurrentUser);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isAccountMenuOpen) {
+      return;
+    }
+
+    const handlePointerDown = (event: MouseEvent) => {
+      if (!accountMenuRef.current?.contains(event.target as Node)) {
+        setIsAccountMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("mousedown", handlePointerDown);
+
+    return () => {
+      window.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, [isAccountMenuOpen]);
+
   useLayoutEffect(() => {
     const updateActivePill = () => {
       const activeHref = activeNavItem?.href;
@@ -125,6 +195,15 @@ export default function SharedTopMenu({ compact = false, fixed = false, autoComp
       window.removeEventListener("resize", updateActivePill);
     };
   }, [activeNavItem?.href, isCompact]);
+
+  const handleLogout = () => {
+    window.localStorage.removeItem("smartstay_access_token");
+    window.localStorage.removeItem("smartstay_refresh_token");
+    window.localStorage.removeItem("smartstay_user");
+    setCurrentUser(null);
+    setIsAccountMenuOpen(false);
+    navigateWithTransition("/login");
+  };
 
   return (
     <header
@@ -183,31 +262,90 @@ export default function SharedTopMenu({ compact = false, fixed = false, autoComp
         </div>
 
         <div className={`hidden items-center md:flex transition-[gap] duration-300 ${isCompact ? "gap-2" : "gap-3"}`}>
-          <Link
-            href="/login"
-            onClick={(event) => {
-              event.preventDefault();
-              navigateWithTransition("/login");
-            }}
-            className={`inline-flex items-center gap-1.5 rounded-full bg-[#d8ecf3] font-semibold text-[#2d6f86] transition-all duration-300 hover:bg-[#cce5ef] ${
-              isCompact ? "h-9 px-4 text-[13px]" : "h-10 px-5 text-sm"
-            }`}
-          >
-            <span>Dang nhap</span>
-            <LogIn className={`transition-all duration-300 ${isCompact ? "size-3.5" : "size-4"}`} />
-          </Link>
-          <Link
-            href="/register"
-            onClick={(event) => {
-              event.preventDefault();
-              navigateWithTransition("/register");
-            }}
-            className={`inline-flex items-center rounded-full bg-[#2e9ed8] font-semibold text-white shadow-[0_8px_14px_rgba(56,142,184,0.22)] transition-all duration-300 hover:bg-[#238fc9] ${
-              isCompact ? "h-9 px-4 text-[13px]" : "h-10 px-5 text-sm"
-            }`}
-          >
-            Dang ky
-          </Link>
+          {currentUser ? (
+            <div ref={accountMenuRef} className="relative">
+              <button
+                type="button"
+                onClick={() => setIsAccountMenuOpen((previous) => !previous)}
+                className={`inline-flex items-center rounded-full text-slate-900 transition-all duration-300 hover:opacity-85 ${
+                  isCompact ? "gap-2" : "gap-3"
+                }`}
+              >
+                <div className={`flex shrink-0 items-center justify-center rounded-full bg-[#febb02] font-bold text-[#2b4f66] ${isCompact ? "size-8 text-sm" : "size-9 text-base"}`}>
+                  {(currentUser.fullName?.trim() || currentUser.email?.trim() || "S").charAt(0).toUpperCase()}
+                </div>
+                <div className="min-w-0 text-left leading-tight">
+                  <p className={`truncate font-semibold text-slate-900 ${isCompact ? "max-w-[140px] text-[13px]" : "max-w-[180px] text-sm"}`}>
+                    {currentUser.fullName?.trim() || currentUser.email?.trim() || "SmartStay User"}
+                  </p>
+                </div>
+              </button>
+
+              {isAccountMenuOpen ? (
+                <div className="account-dropdown-fall absolute left-1/2 top-[calc(100%+6px)] z-[180] ml-[-160px] w-[320px] overflow-hidden rounded-[18px] border border-slate-200 bg-white text-slate-950 shadow-[0_22px_42px_rgba(15,23,42,0.18)]">
+                  <div className="py-2">
+                    {accountMenuItems.map((item) => {
+                      const Icon = item.icon;
+
+                      if (item.action === "logout") {
+                        return (
+                          <button
+                            key={item.label}
+                            type="button"
+                            onClick={handleLogout}
+                            className="group flex w-full items-center gap-3 px-4 py-3 text-left text-[0.98rem] text-slate-900 transition hover:bg-[#eef7fa] hover:text-[#2e7086]"
+                          >
+                            <Icon className="size-[18px] shrink-0 text-slate-500 transition group-hover:text-[#2e7086]" />
+                            <span>{item.label}</span>
+                          </button>
+                        );
+                      }
+
+                      return (
+                        <Link
+                          key={item.label}
+                          href={item.href ?? "#"}
+                          onClick={() => setIsAccountMenuOpen(false)}
+                          className="group flex items-center gap-3 px-4 py-3 text-[0.98rem] text-slate-900 transition hover:bg-[#eef7fa] hover:text-[#2e7086]"
+                        >
+                          <Icon className="size-[18px] shrink-0 text-slate-500 transition group-hover:text-[#2e7086]" />
+                          <span>{item.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigateWithTransition("/login");
+                }}
+                className={`inline-flex items-center gap-1.5 rounded-full bg-[#d8ecf3] font-semibold text-[#2d6f86] transition-all duration-300 hover:bg-[#cce5ef] ${
+                  isCompact ? "h-9 px-4 text-[13px]" : "h-10 px-5 text-sm"
+                }`}
+              >
+                <span>Dang nhap</span>
+                <LogIn className={`transition-all duration-300 ${isCompact ? "size-3.5" : "size-4"}`} />
+              </Link>
+              <Link
+                href="/register"
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigateWithTransition("/register");
+                }}
+                className={`inline-flex items-center rounded-full bg-[#2e9ed8] font-semibold text-white shadow-[0_8px_14px_rgba(56,142,184,0.22)] transition-all duration-300 hover:bg-[#238fc9] ${
+                  isCompact ? "h-9 px-4 text-[13px]" : "h-10 px-5 text-sm"
+                }`}
+              >
+                Dang ky
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

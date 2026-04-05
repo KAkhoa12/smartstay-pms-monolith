@@ -2,14 +2,12 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 import {
   BedDouble,
   Building2,
-  CalendarDays,
   Check,
   ChevronDown,
-  ChevronLeft,
-  ChevronRight,
   House,
   Map,
   Search,
@@ -106,10 +104,6 @@ export default function HomeManagementPage() {
   const [rooms, setRooms] = useState(1);
   const [beds, setBeds] = useState(1);
   const [petFriendly, setPetFriendly] = useState(false);
-  const [displayMonth, setDisplayMonth] = useState(() => {
-    const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), 1);
-  });
 
   useEffect(() => {
     const fetchProvinces = async () => {
@@ -143,38 +137,6 @@ export default function HomeManagementPage() {
       ? `${new Date(checkInDate).toLocaleDateString("vi-VN")} - ${new Date(checkOutDate).toLocaleDateString("vi-VN")}`
       : "Nhan phong - Tra phong";
   const guestDisplayLabel = `${adults} nguoi lon - ${children} tre em - ${rooms} phong - ${beds} giuong`;
-
-  const monthTitle = displayMonth.toLocaleDateString("vi-VN", {
-    month: "long",
-    year: "numeric",
-  });
-  const monthStartWeekday = (displayMonth.getDay() + 6) % 7;
-  const daysInMonth = new Date(displayMonth.getFullYear(), displayMonth.getMonth() + 1, 0).getDate();
-  const dayLabels = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
-
-  const toIsoDate = (year: number, month: number, day: number) => {
-    const mm = String(month + 1).padStart(2, "0");
-    const dd = String(day).padStart(2, "0");
-    return `${year}-${mm}-${dd}`;
-  };
-
-  const handlePickDate = (day: number) => {
-    const picked = toIsoDate(displayMonth.getFullYear(), displayMonth.getMonth(), day);
-
-    if (!checkInDate || (checkInDate && checkOutDate)) {
-      setCheckInDate(picked);
-      setCheckOutDate("");
-      return;
-    }
-
-    if (picked < checkInDate) {
-      setCheckInDate(picked);
-      return;
-    }
-
-    setCheckOutDate(picked);
-    setIsDateOpen(false);
-  };
 
   const handleProvinceChange = async (provinceCode: string) => {
     setSelectedProvinceCode(provinceCode);
@@ -344,88 +306,20 @@ export default function HomeManagementPage() {
               </div>
 
               <div className="relative">
-                <button
-                  type="button"
-                  onClick={() => setIsDateOpen((open) => !open)}
-                  className="flex h-11 w-full items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-left"
-                >
-                  <CalendarDays className="size-4 text-slate-500" />
-                  <span className="text-sm font-semibold text-slate-800">{dateDisplayLabel}</span>
-                  <ChevronDown className="ml-auto size-4 text-slate-500" />
-                </button>
-                {isDateOpen ? (
-                  <div className="absolute left-1/2 top-[calc(100%+6px)] z-30 w-[430px] -translate-x-1/2 rounded-md border border-slate-200 bg-white p-4 shadow-lg">
-                    <p className="mb-2 text-center text-sm font-medium text-[#005ea8]">Lich</p>
-                    <div className="mb-3 flex items-center justify-between border-t border-[#2f80ed] pt-2">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setDisplayMonth(
-                            (current) => new Date(current.getFullYear(), current.getMonth() - 1, 1),
-                          )
-                        }
-                        className="rounded p-1 text-slate-500 hover:bg-slate-100"
-                        aria-label="Thang truoc"
-                      >
-                        <ChevronLeft className="size-4" />
-                      </button>
-                      <p className="text-lg font-semibold capitalize text-slate-800">{monthTitle}</p>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setDisplayMonth(
-                            (current) => new Date(current.getFullYear(), current.getMonth() + 1, 1),
-                          )
-                        }
-                        className="rounded p-1 text-slate-500 hover:bg-slate-100"
-                        aria-label="Thang sau"
-                      >
-                        <ChevronRight className="size-4" />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-7 gap-1.5 text-center text-sm text-slate-600">
-                      {dayLabels.map((label) => (
-                        <div key={label} className="py-1 font-medium">
-                          {label}
-                        </div>
-                      ))}
-
-                      {Array.from({ length: monthStartWeekday }).map((_, idx) => (
-                        <div key={`empty-${idx}`} />
-                      ))}
-
-                      {Array.from({ length: daysInMonth }).map((_, idx) => {
-                        const day = idx + 1;
-                        const iso = toIsoDate(displayMonth.getFullYear(), displayMonth.getMonth(), day);
-                        const isStart = iso === checkInDate;
-                        const isEnd = iso === checkOutDate;
-                        const isInRange =
-                          Boolean(checkInDate) &&
-                          Boolean(checkOutDate) &&
-                          iso > checkInDate &&
-                          iso < checkOutDate;
-
-                        return (
-                          <button
-                            key={iso}
-                            type="button"
-                            onClick={() => handlePickDate(day)}
-                            className={`h-10 rounded text-sm ${
-                              isStart || isEnd
-                                ? "bg-[#0070c9] font-semibold text-white"
-                                : isInRange
-                                  ? "bg-[#e8f1ff] text-[#005ea8]"
-                                  : "text-slate-700 hover:bg-slate-100"
-                            }`}
-                          >
-                            {day}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ) : null}
+                <DateRangePicker
+                  checkIn={checkInDate}
+                  checkOut={checkOutDate}
+                  onChange={({ checkIn, checkOut }) => {
+                    setCheckInDate(checkIn);
+                    setCheckOutDate(checkOut);
+                  }}
+                  open={isDateOpen}
+                  onOpenChange={setIsDateOpen}
+                  triggerClassName="flex h-11 w-full items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-left"
+                  dropdownClassName="absolute left-1/2 top-[calc(100%+6px)] z-30 w-[min(92vw,760px)] -translate-x-1/2 p-2"
+                  placeholder="Nhan phong - Tra phong"
+                  labelClassName="text-sm font-semibold text-slate-800"
+                />
               </div>
 
               <div className="relative">
